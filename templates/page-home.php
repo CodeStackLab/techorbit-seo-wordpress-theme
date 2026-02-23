@@ -1,283 +1,314 @@
 <?php
 /**
  * Template Name: Home
- * Template for the homepage — full hero + features + tools + how-it-works + testimonials
- *
- * @package techorbit-seo
+ * Homepage template — 30+ AI SEO tools with category filter
  */
+
 get_header();
+
+// 35 Tools across 5 categories
+$tools = [
+    // SEO Tools
+    ['name'=>'AI Meta Generator','desc'=>'Generate optimised title tags & meta descriptions instantly.','icon'=>'🎯','cat'=>'seo','url'=>'/tools/meta-generator/','badge'=>'popular'],
+    ['name'=>'Keyword Cluster Tool','desc'=>'Group keywords by search intent for smarter content planning.','icon'=>'🗂','cat'=>'seo','url'=>'/tools/keyword-cluster/','badge'=>'popular'],
+    ['name'=>'FAQ Schema Generator','desc'=>'Create JSON-LD FAQ schema markup for Google rich results.','icon'=>'❓','cat'=>'seo','url'=>'/tools/faq-generator/','badge'=>''],
+    ['name'=>'Open Graph Tag Generator','desc'=>'Generate perfect OG tags for social media previews.','icon'=>'🔗','cat'=>'seo','url'=>'#','badge'=>''],
+    ['name'=>'Robots.txt Generator','desc'=>'Build a proper robots.txt file with custom rules.','icon'=>'🤖','cat'=>'seo','url'=>'#','badge'=>'new'],
+    ['name'=>'XML Sitemap Helper','desc'=>'Checklist and guide for generating perfect XML sitemaps.','icon'=>'🗺','cat'=>'seo','url'=>'#','badge'=>''],
+    ['name'=>'Canonical Tag Advisor','desc'=>'Prevent duplicate content with proper canonical tags.','icon'=>'🔁','cat'=>'seo','url'=>'#','badge'=>''],
+    ['name'=>'Title Tag Analyzer','desc'=>'Analyse and score your title tags for SEO effectiveness.','icon'=>'📊','cat'=>'seo','url'=>'#','badge'=>''],
+
+    // Content Tools
+    ['name'=>'Blog Outline Builder','desc'=>'Generate structured H1/H2/H3 blog outlines in seconds.','icon'=>'📝','cat'=>'content','url'=>'/tools/blog-outline/','badge'=>'popular'],
+    ['name'=>'Product Description Writer','desc'=>'Write compelling SEO-ready product descriptions.','icon'=>'🛒','cat'=>'content','url'=>'/tools/product-description/','badge'=>''],
+    ['name'=>'Blog Topic Generator','desc'=>'Get 10+ blog topic ideas from a single keyword.','icon'=>'💡','cat'=>'content','url'=>'#','badge'=>'new'],
+    ['name'=>'Paragraph Expander','desc'=>'Expand short sentences into rich, detailed paragraphs.','icon'=>'📄','cat'=>'content','url'=>'#','badge'=>''],
+    ['name'=>'Content Summarizer','desc'=>'Summarise long articles into key takeaways.','icon'=>'✂️','cat'=>'content','url'=>'#','badge'=>''],
+    ['name'=>'Headline Analyzer','desc'=>'Score your blog headlines for clicks and SEO.','icon'=>'📰','cat'=>'content','url'=>'#','badge'=>''],
+    ['name'=>'Intro Generator','desc'=>'Craft engaging article introductions that hook readers.','icon'=>'🪝','cat'=>'content','url'=>'#','badge'=>''],
+    ['name'=>'Conclusion Writer','desc'=>'Write strong conclusions with a clear call to action.','icon'=>'🏁','cat'=>'content','url'=>'#','badge'=>''],
+    ['name'=>'Article Rewriter','desc'=>'Rewrite content in a fresh voice while preserving meaning.','icon'=>'✏️','cat'=>'content','url'=>'#','badge'=>'new'],
+
+    // Keyword Tools
+    ['name'=>'LSI Keyword Generator','desc'=>'Find semantically-related keywords to enrich your content.','icon'=>'🔍','cat'=>'keyword','url'=>'#','badge'=>''],
+    ['name'=>'Long-tail Keyword Finder','desc'=>'Discover low-competition long-tail keyword opportunities.','icon'=>'📈','cat'=>'keyword','url'=>'#','badge'=>'new'],
+    ['name'=>'Search Intent Analyzer','desc'=>'Classify any keyword by informational, commercial or transactional intent.','icon'=>'🧭','cat'=>'keyword','url'=>'#','badge'=>''],
+    ['name'=>'Keyword Difficulty Estimator','desc'=>'Get a quick difficulty score for any keyword.','icon'=>'🏋️','cat'=>'keyword','url'=>'#','badge'=>''],
+    ['name'=>'Competitor Keyword Spy','desc'=>'Discover which keywords your competitors rank for.','icon'=>'🕵️','cat'=>'keyword','url'=>'#','badge'=>'new'],
+
+    // Technical SEO
+    ['name'=>'Schema Markup Generator','desc'=>'Generate structured data schema for any content type.','icon'=>'🏗','cat'=>'technical','url'=>'#','badge'=>''],
+    ['name'=>'Twitter Card Generator','desc'=>'Create Twitter card meta tags for better social sharing.','icon'=>'🐦','cat'=>'technical','url'=>'#','badge'=>''],
+    ['name'=>'Alt Text Generator','desc'=>'Generate descriptive alt text for images from AI.','icon'=>'🖼','cat'=>'technical','url'=>'#','badge'=>'new'],
+    ['name'=>'Core Web Vitals Advisor','desc'=>'Get actionable tips to improve LCP, CLS & FID.','icon'=>'⚡','cat'=>'technical','url'=>'#','badge'=>''],
+    ['name'=>'Hreflang Tag Builder','desc'=>'Build hreflang tags for multilingual SEO.','icon'=>'🌐','cat'=>'technical','url'=>'#','badge'=>''],
+    ['name'=>'JSON-LD Generator','desc'=>'Create custom JSON-LD structured data snippets.','icon'=>'{ }','cat'=>'technical','url'=>'#','badge'=>''],
+
+    // Social & Copywriting
+    ['name'=>'Social Media Caption Writer','desc'=>'Write engaging captions for Instagram, Facebook & LinkedIn.','icon'=>'📱','cat'=>'social','url'=>'#','badge'=>'new'],
+    ['name'=>'Hashtag Generator','desc'=>'Get relevant hashtags for any topic or niche.','icon'=>'#️⃣','cat'=>'social','url'=>'#','badge'=>''],
+    ['name'=>'LinkedIn Post Writer','desc'=>'Create professional LinkedIn posts that drive engagement.','icon'=>'💼','cat'=>'social','url'=>'#','badge'=>''],
+    ['name'=>'Twitter Thread Generator','desc'=>'Turn any blog post into a compelling Twitter thread.','icon'=>'🧵','cat'=>'social','url'=>'#','badge'=>'new'],
+    ['name'=>'Ad Copy Generator','desc'=>'Write high-converting Google & Facebook ad copy.','icon'=>'📣','cat'=>'social','url'=>'#','badge'=>''],
+    ['name'=>'Email Subject Line Writer','desc'=>'Craft irresistible email subject lines with AI.','icon'=>'📧','cat'=>'social','url'=>'#','badge'=>''],
+    ['name'=>'Call-to-Action Generator','desc'=>'Generate powerful CTAs for landing pages and blogs.','icon'=>'👆','cat'=>'social','url'=>'#','badge'=>''],
+];
+
+$categories = [
+    'all'       => ['label'=>'All Tools',      'count'=>count($tools)],
+    'seo'       => ['label'=>'SEO',            'count'=>count(array_filter($tools, fn($t)=>$t['cat']==='seo'))],
+    'content'   => ['label'=>'Content',        'count'=>count(array_filter($tools, fn($t)=>$t['cat']==='content'))],
+    'keyword'   => ['label'=>'Keywords',       'count'=>count(array_filter($tools, fn($t)=>$t['cat']==='keyword'))],
+    'technical' => ['label'=>'Technical SEO',  'count'=>count(array_filter($tools, fn($t)=>$t['cat']==='technical'))],
+    'social'    => ['label'=>'Social & Copy',  'count'=>count(array_filter($tools, fn($t)=>$t['cat']==='social'))],
+];
 ?>
 
-<!-- ============================================================
-     HERO SECTION
-     ============================================================ -->
-<section class="hero-section" aria-label="Hero">
-    <div class="hero-inner">
-        <div class="hero-badge">
-            <span class="badge-dot"></span>
-            AI-Powered SEO Tools · 100% Free
-        </div>
-
-        <h1 class="hero-title">
-            All&#8209;in&#8209;One SEO Toolkit<br>
-            <span class="highlight">Powered by AI</span>
-        </h1>
-
-        <p class="hero-subtitle">
-            Generate meta tags, build keyword clusters, create blog outlines, write FAQs and product descriptions — all in seconds with OpenAI &amp; Google Gemini.
-        </p>
-
-        <div class="hero-actions">
-            <a href="<?php echo esc_url( home_url( '/tools/' ) ); ?>" class="btn-primary" style="font-size:16px;padding:16px 32px;">
-                🚀 Try AI Tools Free
-            </a>
-            <a href="#how-it-works" class="btn-ghost" style="font-size:16px;padding:14px 28px;">
-                How It Works ↓
-            </a>
-        </div>
-
-        <!-- Stats Counter -->
-        <div class="hero-stats">
-            <div class="stat-item">
-                <span class="stat-number" data-count="5000" data-suffix="+">0+</span>
-                <span class="stat-label">SEO Reports Generated</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-number" data-count="5" data-suffix="">0</span>
-                <span class="stat-label">AI Powered Tools</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-number" data-count="100" data-suffix="%">0%</span>
-                <span class="stat-label">Free to Use</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-number" data-count="2" data-suffix=" AI APIs">0</span>
-                <span class="stat-label">OpenAI + Gemini</span>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ============================================================
-     FEATURES STRIP
-     ============================================================ -->
-<section class="features-strip" aria-label="Features">
-    <div class="container-wide">
-        <div class="features-strip-inner">
-            <div class="feature-item">
-                <div class="feature-icon">🏷️</div>
-                <div class="feature-text">
-                    <strong>Meta Generator</strong>
-                    <span>AI-optimized titles & descriptions</span>
-                </div>
-            </div>
-            <div class="feature-item">
-                <div class="feature-icon">📝</div>
-                <div class="feature-text">
-                    <strong>Blog Outline</strong>
-                    <span>SEO-structured content outlines</span>
-                </div>
-            </div>
-            <div class="feature-item">
-                <div class="feature-icon">🔑</div>
-                <div class="feature-text">
-                    <strong>Keyword Cluster</strong>
-                    <span>Intent-matched keyword groups</span>
-                </div>
-            </div>
-            <div class="feature-item">
-                <div class="feature-icon">❓</div>
-                <div class="feature-text">
-                    <strong>FAQ Generator</strong>
-                    <span>Schema-ready FAQ JSON-LD</span>
-                </div>
-            </div>
-            <div class="feature-item">
-                <div class="feature-icon">🛒</div>
-                <div class="feature-text">
-                    <strong>Product Desc</strong>
-                    <span>SEO copy for e-commerce</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ============================================================
-     AI TOOLS GRID
-     ============================================================ -->
-<section class="tools-section" aria-labelledby="tools-heading">
+<!-- ==================== HERO ==================== -->
+<section class="hero-section">
     <div class="container">
-        <div class="section-header">
-            <span class="section-label">AI-Powered Tools</span>
-            <h2 id="tools-heading">Everything You Need to <span class="text-gradient">Rank Higher</span></h2>
-            <p>Five powerful AI SEO tools built for content creators, marketers, and SEO professionals. Powered by OpenAI GPT and Google Gemini.</p>
-        </div>
+        <div class="hero-inner">
+            <div class="hero-badge"><span class="dot"></span> AI-Powered · <?php echo count($tools); ?>+ SEO Tools</div>
+            <h1 class="hero-title">
+                All-in-One SEO Toolkit<br>
+                <span class="hl">Powered by AI</span>
+            </h1>
+            <p class="hero-sub">
+                Generate meta tags, cluster keywords, build blog outlines, write FAQs and product descriptions — all in seconds using OpenAI &amp; Google Gemini.
+            </p>
 
-        <div class="tools-grid">
-            <?php
-            $tools = [
-                [
-                    'icon'  => '🏷️',
-                    'title' => 'AI Meta Generator',
-                    'desc'  => 'Generate perfectly optimized SEO meta titles (max 60 chars) and meta descriptions (max 160 chars) in one click. Boost your click-through rates from Google SERPs.',
-                    'url'   => home_url( '/tools/meta-generator/' ),
-                    'badge' => 'Most Popular',
-                ],
-                [
-                    'icon'  => '📝',
-                    'title' => 'AI Blog Outline Builder',
-                    'desc'  => 'Create detailed, SEO-structured blog post outlines with H1, H2, and H3 headings in seconds. Never start a post from a blank page again.',
-                    'url'   => home_url( '/tools/blog-outline/' ),
-                    'badge' => 'Content Planning',
-                ],
-                [
-                    'icon'  => '🔑',
-                    'title' => 'AI Keyword Cluster Tool',
-                    'desc'  => 'Cluster your seed keywords into topical groups with search intent tags — informational, commercial, transactional, or navigational.',
-                    'url'   => home_url( '/tools/keyword-cluster/' ),
-                    'badge' => 'Keyword Research',
-                ],
-                [
-                    'icon'  => '❓',
-                    'title' => 'AI FAQ Generator',
-                    'desc'  => 'Generate 8 SEO-optimized FAQs with complete Schema.org FAQPage JSON-LD markup. Improve your chances of winning Google featured snippets.',
-                    'url'   => home_url( '/tools/faq-generator/' ),
-                    'badge' => 'Schema Ready',
-                ],
-                [
-                    'icon'  => '🛒',
-                    'title' => 'AI Product Description',
-                    'desc'  => 'Write SEO-optimized product descriptions that rank and convert. Benefits-first copy with natural keyword integration and a soft call to action.',
-                    'url'   => home_url( '/tools/product-description/' ),
-                    'badge' => 'E-commerce',
-                ],
-            ];
-            foreach ( $tools as $tool ) :
-            ?>
-                <div class="tool-card">
-                    <div class="tool-card-icon"><?php echo esc_html( $tool['icon'] ); ?></div>
-                    <h3><?php echo esc_html( $tool['title'] ); ?></h3>
-                    <p><?php echo esc_html( $tool['desc'] ); ?></p>
-                    <div class="tool-card-footer">
-                        <span class="tool-badge">✅ <?php echo esc_html( $tool['badge'] ); ?></span>
-                        <a href="<?php echo esc_url( $tool['url'] ); ?>" class="tool-cta">Try Free →</a>
-                    </div>
+            <!-- Search Bar -->
+            <div class="hero-search">
+                <input type="text" class="hero-search-input" id="toolSearch" placeholder="Search 35+ tools — meta generator, keyword cluster…" oninput="filterBySearch(this.value)">
+                <button class="hero-search-btn" onclick="filterBySearch(document.getElementById('toolSearch').value)">Search</button>
+            </div>
+
+            <!-- Stats -->
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number" data-count="35">0</span>
+                    <span class="stat-label">AI Tools</span>
                 </div>
-            <?php endforeach; ?>
+                <div class="stat-item">
+                    <span class="stat-number" data-count="50000">0</span>
+                    <span class="stat-label">Monthly Users</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" data-count="99">0</span>
+                    <span class="stat-label">% Uptime</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" data-count="0">∞</span>
+                    <span class="stat-label">Cost</span>
+                </div>
+            </div>
         </div>
     </div>
 </section>
 
-<!-- ============================================================
-     HOW IT WORKS
-     ============================================================ -->
-<section class="how-section" id="how-it-works" aria-labelledby="how-heading">
+<!-- ==================== TRUST STRIP ==================== -->
+<div class="trust-strip">
     <div class="container">
-        <div class="section-header">
-            <span class="section-label">How It Works</span>
-            <h2 id="how-heading">Get SEO Results in <span class="text-gradient">3 Simple Steps</span></h2>
+        <div class="trust-strip-inner">
+            <div class="trust-item"><span class="trust-icon">⚡</span><div><span>Instant Results</span><small>No sign-up needed</small></div></div>
+            <div class="trust-item"><span class="trust-icon">🤖</span><div><span>GPT-4o + Gemini</span><small>Latest AI models</small></div></div>
+            <div class="trust-item"><span class="trust-icon">🔒</span><div><span>Privacy First</span><small>No data stored</small></div></div>
+            <div class="trust-item"><span class="trust-icon">📱</span><div><span>Mobile Friendly</span><small>Works everywhere</small></div></div>
+            <div class="trust-item"><span class="trust-icon">🔄</span><div><span>Always Updated</span><small>New tools weekly</small></div></div>
         </div>
-
-        <div class="steps-grid">
-            <div class="step-item">
-                <div class="step-number">1</div>
-                <h3>Choose Your Tool</h3>
-                <p>Select from our 5 AI-powered SEO tools — meta generator, blog outline builder, keyword clusterer, FAQ generator, or product description writer.</p>
-            </div>
-            <div class="step-item">
-                <div class="step-number">2</div>
-                <h3>Enter Your Topic</h3>
-                <p>Type your page title, target keyword, or product name. Our AI understands context and intent to produce highly relevant SEO content.</p>
-            </div>
-            <div class="step-item">
-                <div class="step-number">3</div>
-                <h3>Copy & Publish</h3>
-                <p>Get your AI-generated result in seconds. Copy it to your clipboard and paste it directly into WordPress, Shopify, or any CMS.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ============================================================
-     ADSENSE LEADERBOARD
-     ============================================================ -->
-<div style="background:#F9FAFB;padding:24px 0;">
-    <div class="container" style="text-align:center;">
-        <?php techorbit_adsense( 'content' ); ?>
     </div>
 </div>
 
-<!-- ============================================================
-     TESTIMONIALS
-     ============================================================ -->
-<section class="testimonials-section" aria-labelledby="testimonials-heading">
+<!-- ==================== TOOLS SECTION ==================== -->
+<section class="tools-section" id="tools">
     <div class="container">
         <div class="section-header">
-            <span class="section-label" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.9);">What Users Say</span>
-            <h2 id="testimonials-heading" style="color:#fff;">Loved by SEO Professionals</h2>
-            <p>Join thousands of marketers and content creators who use TechOrbit SEO daily.</p>
+            <span class="section-label">🛠 AI Tool Suite</span>
+            <h2>Complete SEO Toolkit</h2>
+            <p>Everything you need to dominate search rankings — from keyword research to schema markup.</p>
         </div>
 
+        <!-- Category Filter -->
+        <div class="category-filter" id="catFilter">
+            <?php foreach ($categories as $key => $cat) : ?>
+            <button class="cat-btn <?php echo $key === 'all' ? 'active' : ''; ?>"
+                    data-cat="<?php echo esc_attr($key); ?>"
+                    onclick="filterCat('<?php echo esc_attr($key); ?>', this)">
+                <?php echo esc_html($cat['label']); ?>
+                <span class="cat-count"><?php echo $cat['count']; ?></span>
+            </button>
+            <?php endforeach; ?>
+        </div>
+
+        <!-- Tools Grid -->
+        <div class="tools-grid" id="toolsGrid">
+            <?php foreach ($tools as $tool) :
+                $link = !empty($tool['url']) && $tool['url'] !== '#'
+                    ? esc_url(home_url($tool['url']))
+                    : '#';
+                $is_live = $tool['url'] !== '#';
+            ?>
+            <a href="<?php echo $link; ?>"
+               class="tool-card"
+               data-cat="<?php echo esc_attr($tool['cat']); ?>"
+               data-name="<?php echo esc_attr(strtolower($tool['name'])); ?>"
+               <?php if (!$is_live) echo 'onclick="return false;" style="cursor:default;"'; ?>>
+                <div class="tool-card-head">
+                    <div class="tool-icon-wrap"><?php echo $tool['icon']; ?></div>
+                    <?php if ($tool['badge'] === 'new') : ?>
+                        <span class="tool-badge-new">New</span>
+                    <?php elseif ($tool['badge'] === 'popular') : ?>
+                        <span class="tool-badge-popular">⭐ Popular</span>
+                    <?php endif; ?>
+                </div>
+                <h3><?php echo esc_html($tool['name']); ?></h3>
+                <p><?php echo esc_html($tool['desc']); ?></p>
+                <div class="tool-card-foot">
+                    <span class="tool-cat-tag"><?php echo esc_html(ucfirst($tool['cat'])); ?></span>
+                    <?php if ($is_live) : ?>
+                        <span class="tool-arrow">Try now →</span>
+                    <?php else : ?>
+                        <span class="tool-arrow" style="color:var(--text-light);font-size:12px;">Coming soon</span>
+                    <?php endif; ?>
+                </div>
+            </a>
+            <?php endforeach; ?>
+        </div>
+
+        <!-- No results message -->
+        <div id="noResults" style="display:none; text-align:center; padding:48px 0; color:var(--text-muted);">
+            <div style="font-size:40px; margin-bottom:12px;">🔍</div>
+            <h3 style="font-size:18px; margin-bottom:8px;">No tools found</h3>
+            <p style="font-size:14px;">Try a different search term or category.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== HOW IT WORKS ==================== -->
+<section class="how-section">
+    <div class="container">
+        <div class="section-header center">
+            <span class="section-label">⚙️ Simple Process</span>
+            <h2>How TechOrbit Works</h2>
+            <p>Three steps from keyword to content-ready output.</p>
+        </div>
+        <div class="steps-row">
+            <div class="step-item">
+                <div class="step-num">1</div>
+                <h3>Choose Your Tool</h3>
+                <p>Pick from 35+ AI tools — SEO, content writing, keyword research, or technical SEO.</p>
+            </div>
+            <div class="step-item">
+                <div class="step-num">2</div>
+                <h3>Enter Your Topic</h3>
+                <p>Type your keyword or topic. Our AI uses GPT-4o or Gemini to generate results instantly.</p>
+            </div>
+            <div class="step-item">
+                <div class="step-num">3</div>
+                <h3>Copy &amp; Publish</h3>
+                <p>Copy the generated output directly to your CMS, Google Sheets, or wherever you work.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== TESTIMONIALS ==================== -->
+<section class="testimonials-section">
+    <div class="container">
+        <div class="section-header center">
+            <span class="section-label">💬 What Users Say</span>
+            <h2>Trusted by SEO Professionals</h2>
+            <p>Join thousands of bloggers, agencies, and marketers who use TechOrbit daily.</p>
+        </div>
         <div class="testimonials-grid">
             <div class="testimonial-card">
-                <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
-                <p class="testimonial-text">"The AI Meta Generator saved me hours every week. I used to spend 20 minutes crafting perfect meta tags — now it's done in 5 seconds and the quality is better than what I wrote manually."</p>
-                <div class="testimonial-author">
-                    <div class="author-avatar">RK</div>
-                    <div class="author-info">
-                        <strong>Rahul Kumar</strong>
-                        <span>SEO Consultant, Delhi</span>
-                    </div>
+                <div class="stars">★★★★★</div>
+                <p class="testimonial-text">"The keyword cluster tool alone saved me 3 hours of manual research. I use it before every content sprint now."</p>
+                <div class="testimonial-auth">
+                    <div class="auth-avatar">R</div>
+                    <div class="auth-info"><strong>Rohit Sharma</strong><span>SEO Strategist · Mumbai</span></div>
                 </div>
             </div>
-
             <div class="testimonial-card">
-                <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
-                <p class="testimonial-text">"The keyword clustering tool is incredible. It groups keywords by search intent in a way I could never do manually. My content strategy has completely transformed since using TechOrbit SEO."</p>
-                <div class="testimonial-author">
-                    <div class="author-avatar">PS</div>
-                    <div class="author-info">
-                        <strong>Priya Sharma</strong>
-                        <span>Digital Marketing Manager</span>
-                    </div>
+                <div class="stars">★★★★★</div>
+                <p class="testimonial-text">"Better meta descriptions in 10 seconds flat. My CTR jumped 18% in the first month after switching to TechOrbit."</p>
+                <div class="testimonial-auth">
+                    <div class="auth-avatar">P</div>
+                    <div class="auth-info"><strong>Priya Nair</strong><span>Content Lead · Bangalore</span></div>
                 </div>
             </div>
-
             <div class="testimonial-card">
-                <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
-                <p class="testimonial-text">"FAQ Generator with Schema JSON-LD is a game changer. Three of my product pages now appear in Google's featured snippets thanks to the schema markup this tool generates. Absolutely worth it!"</p>
-                <div class="testimonial-author">
-                    <div class="author-avatar">AM</div>
-                    <div class="author-info">
-                        <strong>Aisha Mohammed</strong>
-                        <span>E-commerce Store Owner</span>
-                    </div>
+                <div class="stars">★★★★★</div>
+                <p class="testimonial-text">"The FAQ schema generator is brilliant. Rich results showing up within a week of implementation. Incredible!"</p>
+                <div class="testimonial-auth">
+                    <div class="auth-avatar">A</div>
+                    <div class="auth-info"><strong>Ahmed Al-Rashid</strong><span>Digital Agency Owner · Dubai</span></div>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- ============================================================
-     BOTTOM CTA
-     ============================================================ -->
-<section style="background:#fff;padding:80px 0;text-align:center;">
+<!-- ==================== CTA ==================== -->
+<section class="cta-section">
     <div class="container">
-        <span class="section-label">Start Now</span>
-        <h2 style="font-size:clamp(28px,4vw,42px);margin:12px 0 16px;">Ready to Boost Your SEO Rankings?</h2>
-        <p style="color:var(--text-muted);font-size:17px;margin-bottom:40px;max-width:500px;margin-left:auto;margin-right:auto;">
-            All 5 AI tools are completely free to use. No sign-up required. Just enter your topic and let AI do the work.
-        </p>
-        <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
-            <a href="<?php echo esc_url( home_url( '/tools/' ) ); ?>" class="btn-primary" style="font-size:16px;padding:16px 36px;">
-                🚀 Start Using Free Tools
-            </a>
-            <a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>" class="btn-secondary" style="font-size:16px;padding:14px 32px;">
-                📖 Read SEO Blog
-            </a>
+        <div class="cta-inner">
+            <span class="section-label" style="background:rgba(255,107,44,0.18); color:#FFB07A; border:1px solid rgba(255,107,44,0.3);">No Account Required</span>
+            <h2>Start Optimising Your Content Today</h2>
+            <p>35+ AI-powered tools. No registration. No limits. Just results.</p>
+            <div class="cta-btns">
+                <a href="<?php echo esc_url(home_url('/tools/')); ?>" class="btn-primary" style="font-size:15px; padding:12px 28px;">🛠 Explore All Tools</a>
+                <a href="<?php echo esc_url(home_url('/tools/meta-generator/')); ?>" class="btn-ghost-dark">Try Meta Generator</a>
+            </div>
         </div>
     </div>
 </section>
+
+<!-- Category filter + search JS -->
+<script>
+function filterCat(cat, btn) {
+    // Update active button
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    // Clear search
+    document.getElementById('toolSearch').value = '';
+    // Filter cards
+    let visible = 0;
+    document.querySelectorAll('.tool-card').forEach(card => {
+        const match = cat === 'all' || card.dataset.cat === cat;
+        card.style.display = match ? 'block' : 'none';
+        if (match) visible++;
+    });
+    document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+}
+function filterBySearch(query) {
+    // Clear category filter
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('[data-cat="all"]').classList.add('active');
+    const q = query.toLowerCase().trim();
+    let visible = 0;
+    document.querySelectorAll('.tool-card').forEach(card => {
+        const name = card.dataset.name || '';
+        const desc = card.querySelector('p')?.textContent.toLowerCase() || '';
+        const match = !q || name.includes(q) || desc.includes(q);
+        card.style.display = match ? 'block' : 'none';
+        if (match) visible++;
+    });
+    document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+}
+</script>
+
+<?php
+// AdSense
+$settings = techorbit_get_settings();
+$pub = $settings['adsense_id'] ?? '';
+if ($pub) : ?>
+<div class="ad-slot container" style="padding:24px 20px;">
+    <p class="ad-label">Advertisement</p>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<?php echo esc_attr($pub); ?>" crossorigin="anonymous"></script>
+    <ins class="adsbygoogle" style="display:block" data-ad-client="<?php echo esc_attr($pub); ?>" data-ad-slot="homepage" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
+<?php endif; ?>
 
 <?php get_footer(); ?>
