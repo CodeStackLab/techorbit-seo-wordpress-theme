@@ -1,88 +1,85 @@
 <?php
 /**
  * Template Name: Tools Directory
- * Lists all 5 AI SEO tools
+ * Lists all 35+ AI SEO tools
  *
  * @package techorbit-seo
  */
 get_header();
+
+$tools = [
+    // SEO Tools
+    ['name'=>'AI Meta Generator','desc'=>'Instantly generate SEO-ready meta titles and descriptions.','icon'=>'🏷️','cat'=>'seo','url'=>'/tools/meta-generator/','badge'=>'popular'],
+    ['name'=>'AI FAQ Generator','desc'=>'Generate FAQ schema with 8+ questions in JSON-LD format.','icon'=>'❓','cat'=>'seo','url'=>'/tools/faq-generator/','badge'=>'schema'],
+    ['name'=>'AI Keyword Cluster Tool','desc'=>'Group keywords into clusters with search intent analysis.','icon'=>'🔑','cat'=>'seo','url'=>'/tools/keyword-cluster/','badge'=>'research'],
+    ['name'=>'Open Graph Tag Generator','desc'=>'Generate perfect OG tags for social media previews.','icon'=>'🔗','cat'=>'seo','url'=>'#','badge'=>''],
+    ['name'=>'Robots.txt Generator','desc'=>'Build a proper robots.txt file with custom rules.','icon'=>'🤖','cat'=>'seo','url'=>'#','badge'=>'new'],
+    ['name'=>'XML Sitemap Helper','desc'=>'Checklist and guide for generating perfect XML sitemaps.','icon'=>'🗺','cat'=>'seo','url'=>'#','badge'=>''],
+
+    // Content Tools
+    ['name'=>'Blog Outline Builder','desc'=>'Generate structured H1/H2/H3 blog outlines in seconds.','icon'=>'📝','cat'=>'content','url'=>'/tools/blog-outline/','badge'=>'popular'],
+    ['name'=>'Product Description Writer','desc'=>'Write compelling SEO-ready product descriptions.','icon'=>'🛒','cat'=>'content','url'=>'/tools/product-description/','badge'=>''],
+    ['name'=>'Blog Topic Generator','desc'=>'Get 10+ blog topic ideas from a single keyword.','icon'=>'💡','cat'=>'content','url'=>'#','badge'=>'new'],
+    ['name'=>'Paragraph Expander','desc'=>'Expand short sentences into rich, detailed paragraphs.','icon'=>'📄','cat'=>'content','url'=>'#','badge'=>''],
+    ['name'=>'Content Summarizer','desc'=>'Summarise long articles into key takeaways.','icon'=>'✂️','cat'=>'content','url'=>'#','badge'=>''],
+    ['name'=>'Headline Analyzer','desc'=>'Score your blog headlines for clicks and SEO.','icon'=>'📰','cat'=>'content','url'=>'#','badge'=>''],
+
+    // Keyword Tools
+    ['name'=>'LSI Keyword Generator','desc'=>'Find semantically-related keywords to enrich your content.','icon'=>'🔍','cat'=>'keyword','url'=>'#','badge'=>''],
+    ['name'=>'Long-tail Keyword Finder','desc'=>'Discover low-competition long-tail keyword opportunities.','icon'=>'📈','cat'=>'keyword','url'=>'#','badge'=>'new'],
+    ['name'=>'Search Intent Analyzer','desc'=>'Classify any keyword by informational, commercial or transactional intent.','icon'=>'🧭','cat'=>'keyword','url'=>'#','badge'=>''],
+
+    // Technical SEO
+    ['name'=>'Schema Markup Generator','desc'=>'Generate structured data schema for any content type.','icon'=>'🏗','cat'=>'technical','url'=>'#','badge'=>''],
+    ['name'=>'Twitter Card Generator','desc'=>'Create Twitter card meta tags for better social sharing.','icon'=>'🐦','cat'=>'technical','url'=>'#','badge'=>''],
+    ['name'=>'Alt Text Generator','desc'=>'Generate descriptive alt text for images from AI.','icon'=>'🖼','cat'=>'technical','url'=>'#','badge'=>'new'],
+
+    // Social & Copywriting
+    ['name'=>'Social Media Caption Writer','desc'=>'Write engaging captions for Instagram, Facebook & LinkedIn.','icon'=>'📱','cat'=>'social','url'=>'#','badge'=>'new'],
+    ['name'=>'Hashtag Generator','desc'=>'Get relevant hashtags for any topic or niche.','icon'=>'#️⃣','cat'=>'social','url'=>'#','badge'=>''],
+    ['name'=>'LinkedIn Post Writer','desc'=>'Create professional LinkedIn posts that drive engagement.','icon'=>'💼','cat'=>'social','url'=>'#','badge'=>''],
+];
 ?>
 
 <div class="tools-listing-hero">
     <div class="container">
         <span class="section-label" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.9);">AI Powered</span>
-        <h1>Free AI SEO Tools</h1>
-        <p>Five powerful tools to supercharge your SEO — powered by OpenAI GPT-4o and Google Gemini.</p>
+        <h1>SEO Tools Directory</h1>
+        <p>Explore our full suite of 35+ free AI tools — powered by OpenAI GPT-4o and Google Gemini.</p>
     </div>
 </div>
 
-<?php
-$tools = [
-    [
-        'icon'   => '🏷️',
-        'title'  => 'AI Meta Generator',
-        'desc'   => 'Instantly generate SEO-optimized meta titles (max 60 characters) and meta descriptions (max 160 characters) for any page or post. Improve your SERP click-through rate without hours of manual writing.',
-        'url'    => home_url( '/tools/meta-generator/' ),
-        'tags'   => ['Meta Tags', 'SERP CTR', 'On-Page SEO'],
-        'badge'  => '🔥 Most Used',
-    ],
-    [
-        'icon'   => '📝',
-        'title'  => 'AI Blog Outline Builder',
-        'desc'   => 'Create detailed SEO-optimized blog post outlines with H1, H2, and H3 headings structured for search intent. Start publishing faster and rank higher with a properly structured article.',
-        'url'    => home_url( '/tools/blog-outline/' ),
-        'tags'   => ['Content Strategy', 'Blog SEO', 'Headings'],
-        'badge'  => '📝 Content',
-    ],
-    [
-        'icon'   => '🔑',
-        'title'  => 'AI Keyword Cluster Tool',
-        'desc'   => 'Group your seed keywords into topical clusters with search intent classification. Understand whether users want to learn (informational), buy (transactional), or compare (commercial).',
-        'url'    => home_url( '/tools/keyword-cluster/' ),
-        'tags'   => ['Keyword Research', 'Search Intent', 'Topical SEO'],
-        'badge'  => '🔍 Research',
-    ],
-    [
-        'icon'   => '❓',
-        'title'  => 'AI FAQ Generator',
-        'desc'   => 'Generate 8 SEO-optimized FAQs with complete Schema.org FAQPage JSON-LD markup. Ready to paste into your HTML — maximize your chances of winning Google featured snippets.',
-        'url'    => home_url( '/tools/faq-generator/' ),
-        'tags'   => ['Schema Markup', 'Featured Snippets', 'Rich Results'],
-        'badge'  => '⚡ Schema',
-    ],
-    [
-        'icon'   => '🛒',
-        'title'  => 'AI Product Description Writer',
-        'desc'   => 'Write SEO-optimized e-commerce product descriptions that rank in search and convert visitors into buyers. Benefits-first copywriting with natural keyword integration.',
-        'url'    => home_url( '/tools/product-description/' ),
-        'tags'   => ['E-commerce', 'Product SEO', 'Copywriting'],
-        'badge'  => '🛒 E-Commerce',
-    ],
-];
-?>
+<div class="container" style="padding-top:60px; padding-bottom:80px;">
+    <div class="tools-listing-grid">
+        <?php foreach ( $tools as $tool ) : 
+            $link = !empty($tool['url']) && $tool['url'] !== '#' ? esc_url( home_url( $tool['url'] ) ) : '#';
+            $is_live = $tool['url'] !== '#';
+        ?>
+            <a href="<?php echo $link; ?>" class="tools-listing-card" <?php if(!$is_live) echo 'onclick="return false;" style="opacity:0.8;"'; ?>>
+                <div class="tools-listing-icon"><?php echo esc_html( $tool['icon'] ); ?></div>
 
-<div class="tools-listing-grid">
-    <?php foreach ( $tools as $tool ) : ?>
-        <a href="<?php echo esc_url( $tool['url'] ); ?>" class="tools-listing-card">
-            <div class="tools-listing-icon"><?php echo esc_html( $tool['icon'] ); ?></div>
-
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-                <h2><?php echo esc_html( $tool['title'] ); ?></h2>
-                <span class="tool-badge"><?php echo esc_html( $tool['badge'] ); ?></span>
-            </div>
-
-            <p><?php echo esc_html( $tool['desc'] ); ?></p>
-
-            <div class="cta-row">
-                <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                    <?php foreach ( $tool['tags'] as $tag ) : ?>
-                        <span style="background:#F3F4F6;color:var(--text-muted);padding:4px 10px;border-radius:50px;font-size:12px;font-weight:600;"><?php echo esc_html( $tag ); ?></span>
-                    <?php endforeach; ?>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                    <h2 style="font-size:18px;"><?php echo esc_html( $tool['title'] ?? $tool['name'] ); ?></h2>
+                    <?php if(!empty($tool['badge'])): ?>
+                        <span class="tool-badge"><?php echo esc_html( $tool['badge'] ); ?></span>
+                    <?php endif; ?>
                 </div>
-                <span style="color:var(--primary);font-weight:700;font-size:14px;white-space:nowrap;margin-left:8px;">Try Free →</span>
-            </div>
-        </a>
-    <?php endforeach; ?>
+
+                <p><?php echo esc_html( $tool['desc'] ); ?></p>
+
+                <div class="cta-row">
+                    <span style="font-size:12px; font-weight:600; color:var(--text-muted); opacity: 0.7;">
+                        📁 <?php echo esc_html(ucfirst($tool['cat'])); ?>
+                    </span>
+                    <?php if($is_live): ?>
+                        <span style="color:var(--primary);font-weight:700;font-size:14px;white-space:nowrap;margin-left:8px;">Open Tool →</span>
+                    <?php else: ?>
+                        <span style="color:var(--text-light);font-size:12px;white-space:nowrap;margin-left:8px;">Coming Soon</span>
+                    <?php endif; ?>
+                </div>
+            </a>
+        <?php endforeach; ?>
+    </div>
 </div>
 
 <!-- Bottom AdSense -->

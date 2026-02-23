@@ -747,8 +747,9 @@ select {
     background: var(--gradient-cta);
     color: #fff;
     border-color: transparent;
-    box-shadow: 0 4px 14px rgba(255, 107, 44, 0.35);
-    /* Stronger shadow for better visibility */
+    border: 1.5px solid var(--primary);
+    /* Sharp border instead of blur shadow */
+    box-shadow: 0 4px 10px rgba(255, 107, 44, 0.4);
     transform: translateY(-1px);
     z-index: 2;
 }
@@ -1693,6 +1694,21 @@ select {
     color: var(--text-muted);
     line-height: 1.65;
     margin-bottom: 18px;
+}
+
+.tools-listing-icon {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.tool-badge {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--primary);
+    background: var(--primary-light);
+    padding: 3px 10px;
+    border-radius: 4px;
+    text-transform: uppercase;
 }
 
 .cta-row {
