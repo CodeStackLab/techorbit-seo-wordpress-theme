@@ -714,9 +714,11 @@ select {
 .category-filter {
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    /* Centered as per user request */
+    gap: 10px;
     flex-wrap: wrap;
-    margin-bottom: 32px;
+    margin-bottom: 40px;
 }
 
 .cat-btn {
@@ -745,7 +747,24 @@ select {
     background: var(--gradient-cta);
     color: #fff;
     border-color: transparent;
-    box-shadow: 0 2px 8px rgba(255, 107, 44, 0.25);
+    box-shadow: 0 4px 14px rgba(255, 107, 44, 0.35);
+    /* Stronger shadow for better visibility */
+    transform: translateY(-1px);
+    z-index: 2;
+}
+
+.cat-count {
+    font-size: 11px;
+    background: rgba(0, 0, 0, 0.08);
+    /* More visible on white bg */
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-weight: 700;
+}
+
+.cat-btn.active .cat-count {
+    background: rgba(255, 255, 255, 0.25);
+    /* Sharp contrast on active btn */
 }
 
 .cat-btn .cat-count {
