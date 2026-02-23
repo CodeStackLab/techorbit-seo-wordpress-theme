@@ -753,51 +753,7 @@ select {
     background: linear-gradient(135deg, #fff 0%, var(--primary-light) 100%);
 }
 
-/* Category Specific Highlights */
-.tool-card[data-cat="seo"] {
-    border-top: 3px solid var(--cat-seo);
-}
-
-.tool-card[data-cat="content"] {
-    border-top: 3px solid var(--cat-content);
-}
-
-.tool-card[data-cat="keyword"] {
-    border-top: 3px solid var(--cat-keyword);
-}
-
-.tool-card[data-cat="technical"] {
-    border-top: 3px solid var(--cat-technical);
-}
-
-.tool-card[data-cat="social"] {
-    border-top: 3px solid var(--cat-social);
-}
-
-.tool-card[data-cat="seo"]:hover {
-    box-shadow: 0 10px 30px -10px rgba(79, 70, 229, 0.25);
-    border-color: var(--cat-seo);
-}
-
-.tool-card[data-cat="content"]:hover {
-    box-shadow: 0 10px 30px -10px rgba(16, 185, 129, 0.25);
-    border-color: var(--cat-content);
-}
-
-.tool-card[data-cat="keyword"]:hover {
-    box-shadow: 0 10px 30px -10px rgba(245, 158, 11, 0.25);
-    border-color: var(--cat-keyword);
-}
-
-.tool-card[data-cat="technical"]:hover {
-    box-shadow: 0 10px 30px -10px rgba(124, 58, 237, 0.25);
-    border-color: var(--cat-technical);
-}
-
-.tool-card[data-cat="social"]:hover {
-    box-shadow: 0 10px 30px -10px rgba(236, 72, 153, 0.25);
-    border-color: var(--cat-social);
-}
+/* Category Specific Highlights — Keeping it subtle with icons and tags, removing borders */
 
 .tool-card[data-cat="seo"] .tool-icon-wrap {
     background: rgba(79, 70, 229, 0.1);
