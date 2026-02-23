@@ -164,10 +164,19 @@ function techorbit_admin_page_render() {
                     </div>
 
                     <div class="settings-field">
-                        <label for="techorbit_adsense_slot_content" class="field-label"><?php esc_html_e( 'In-Content Ad Slot ID', 'techorbit-seo' ); ?> <span class="badge">Auto</span></label>
+                        <label for="techorbit_adsense_slot_content" class="field-label"><?php esc_html_e( 'In-Content Ad Slot ID (Top)', 'techorbit-seo' ); ?> <span class="badge">Auto</span></label>
                         <input type="text" id="techorbit_adsense_slot_content" name="techorbit_adsense_slot_content"
                                value="<?php echo esc_attr( $settings['adsense_slot_content'] ); ?>"
                                class="settings-input" placeholder="1234567890">
+                        <p class="field-desc"><?php esc_html_e( 'Appears before the main tool content.', 'techorbit-seo' ); ?></p>
+                    </div>
+
+                    <div class="settings-field">
+                        <label for="techorbit_adsense_slot_content_after" class="field-label"><?php esc_html_e( 'In-Content Ad Slot ID (Bottom)', 'techorbit-seo' ); ?> <span class="badge">Auto</span></label>
+                        <input type="text" id="techorbit_adsense_slot_content_after" name="techorbit_adsense_slot_content_after"
+                               value="<?php echo esc_attr( $settings['adsense_slot_content_after'] ); ?>"
+                               class="settings-input" placeholder="1234567890">
+                        <p class="field-desc"><?php esc_html_e( 'Appears after the main tool content.', 'techorbit-seo' ); ?></p>
                     </div>
 
                     <div class="settings-field">
@@ -176,6 +185,17 @@ function techorbit_admin_page_render() {
                                value="<?php echo esc_attr( $settings['adsense_slot_sidebar'] ); ?>"
                                class="settings-input" placeholder="1234567890">
                     </div>
+
+                    <div class="settings-field">
+                        <label for="techorbit_adsense_slot_footer" class="field-label"><?php esc_html_e( 'Footer Ad Slot ID', 'techorbit-seo' ); ?> <span class="badge">Auto</span></label>
+                        <input type="text" id="techorbit_adsense_slot_footer" name="techorbit_adsense_slot_footer"
+                               value="<?php echo esc_attr( $settings['adsense_slot_footer'] ); ?>"
+                               class="settings-input" placeholder="1234567890">
+                    </div>
+
+                    <p class="notice notice-info" style="margin-top:20px; padding:10px; border-left-color:var(--primary);">
+                        <?php esc_html_e( '💡 Note: If you leave a Slot ID or Publisher ID empty, the respective ad unit (and its label) will be completely hidden from the frontend.', 'techorbit-seo' ); ?>
+                    </p>
                 </div>
             </div>
 

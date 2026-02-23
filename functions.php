@@ -93,26 +93,30 @@ if ( is_admin() ) {
 
 /**
  * Returns an AdSense block from theme settings.
- * @param string $slot 'header'|'content'|'sidebar'
+ * @param string $slot 'header'|'content'|'content_after'|'sidebar'|'footer'
  */
 function techorbit_adsense( $slot = 'content' ) {
-    $pub_id    = get_option( 'techorbit_adsense_publisher_id', '' );
+    $settings = techorbit_get_settings();
+    $pub_id   = $settings['adsense_publisher_id'] ?? '';
+    
     $slot_ids  = [
-        'header'  => get_option( 'techorbit_adsense_slot_header', '' ),
-        'content' => get_option( 'techorbit_adsense_slot_content', '' ),
-        'sidebar' => get_option( 'techorbit_adsense_slot_sidebar', '' ),
+        'header'        => $settings['adsense_slot_header'] ?? '',
+        'content'       => $settings['adsense_slot_content'] ?? '',
+        'content_after' => $settings['adsense_slot_content_after'] ?? '',
+        'sidebar'       => $settings['adsense_slot_sidebar'] ?? '',
+        'footer'        => $settings['adsense_slot_footer'] ?? '',
     ];
     $slot_id = isset( $slot_ids[ $slot ] ) ? $slot_ids[ $slot ] : '';
 
+    // STRICT: If no pub_id or no slot_id, hide EVERYTHING (labels, spacers, etc)
     if ( ! $pub_id || ! $slot_id ) {
-        // Placeholder when not configured
-        echo '<div class="adsense-slot adsense-placeholder"><span>Advertisement</span></div>';
         return;
     }
 
     $format = ( $slot === 'header' ) ? 'auto' : 'auto';
     ?>
-    <div class="adsense-slot">
+    <div class="adsense-slot adsense-zone-<?php echo esc_attr( $slot ); ?>">
+        <p class="ad-label"><?php esc_html_e( 'Advertisement', 'techorbit-seo' ); ?></p>
         <ins class="adsbygoogle"
              style="display:block"
              data-ad-client="<?php echo esc_attr( $pub_id ); ?>"
@@ -123,6 +127,7 @@ function techorbit_adsense( $slot = 'content' ) {
     </div>
     <?php
 }
+
 
 /**
  * Social links array from theme options.

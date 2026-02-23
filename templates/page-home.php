@@ -299,16 +299,9 @@ function filterBySearch(query) {
 </script>
 
 <?php
-// AdSense
-$settings = techorbit_get_settings();
-$pub = $settings['adsense_id'] ?? '';
-if ($pub) : ?>
-<div class="ad-slot container" style="padding:24px 20px;">
-    <p class="ad-label">Advertisement</p>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<?php echo esc_attr($pub); ?>" crossorigin="anonymous"></script>
-    <ins class="adsbygoogle" style="display:block" data-ad-client="<?php echo esc_attr($pub); ?>" data-ad-slot="homepage" data-ad-format="auto" data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-</div>
-<?php endif; ?>
+// Footer Ad
+techorbit_adsense( 'footer' );
+?>
+
 
 <?php get_footer(); ?>

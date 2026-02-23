@@ -25,7 +25,10 @@ $model_label = techorbit_ai_models()[ $model ] ?? $model;
 <div class="tool-page-layout">
     <div class="tool-main">
 
+        <?php techorbit_adsense( 'content' ); ?>
+
         <!-- Tool Interface -->
+
         <div class="tool-interface">
             <div class="tool-interface-header">
                 <span class="tool-interface-icon">🏷️</span>
@@ -83,10 +86,9 @@ $model_label = techorbit_ai_models()[ $model ] ?? $model;
             </div><!-- .tool-interface-body -->
         </div><!-- .tool-interface -->
 
-        <!-- In-content AdSense -->
-        <div style="margin-top:32px;">
-            <?php techorbit_adsense( 'content' ); ?>
-        </div>
+        <?php techorbit_adsense( 'content_after' ); ?>
+
+
 
         <!-- SEO Description -->
         <div class="tool-description-section">

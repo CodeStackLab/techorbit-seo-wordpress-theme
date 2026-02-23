@@ -52,6 +52,15 @@ $adsense_id   = $settings['adsense_id'] ?? '';
 
             <!-- Header Actions -->
             <div class="header-actions">
+                <div class="header-auth">
+                    <?php if ( is_user_logged_in() ) : ?>
+                        <a href="<?php echo esc_url( home_url( '/logout/' ) ); ?>" class="btn-login-link"><?php esc_html_e( 'Logout', 'techorbit-seo' ); ?></a>
+                    <?php else : ?>
+                        <a href="<?php echo esc_url( home_url( '/login/' ) ); ?>" class="btn-login-link"><?php esc_html_e( 'Log in', 'techorbit-seo' ); ?></a>
+                        <a href="<?php echo esc_url( home_url( '/register/' ) ); ?>" class="btn-signup-link"><?php esc_html_e( 'Sign up', 'techorbit-seo' ); ?></a>
+                    <?php endif; ?>
+                </div>
+
                 <a href="<?php echo esc_url(home_url('/tools/')); ?>" class="btn-nav-tools">
                     🛠 All Tools
                 </a>
@@ -66,12 +75,8 @@ $adsense_id   = $settings['adsense_id'] ?? '';
     </div>
 </header>
 
-<?php if ($adsense_id) : ?>
-<div class="header-ad-wrap">
-    <div class="container">
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<?php echo esc_attr($adsense_id); ?>" crossorigin="anonymous"></script>
-        <ins class="adsbygoogle" style="display:block" data-ad-client="<?php echo esc_attr($adsense_id); ?>" data-ad-slot="header" data-ad-format="auto" data-full-width-responsive="true"></ins>
-        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-    </div>
-</div>
-<?php endif; ?>
+<?php 
+// Header Ad Slot
+techorbit_adsense( 'header' ); 
+?>
+

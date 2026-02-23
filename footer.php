@@ -97,7 +97,13 @@ $social = techorbit_social_links();
         </div><!-- .container-wide -->
     </div><!-- .footer-top -->
 
+    <?php 
+    // Footer Ad Slot
+    techorbit_adsense( 'footer' ); 
+    ?>
+
     <!-- Footer Bottom -->
+
     <div class="footer-bottom">
         <div class="container-wide">
             <div class="footer-bottom-inner">

@@ -20,7 +20,10 @@ function techorbit_register_settings() {
         'techorbit_adsense_publisher_id',
         'techorbit_adsense_slot_header',
         'techorbit_adsense_slot_content',
+        'techorbit_adsense_slot_content_after',
         'techorbit_adsense_slot_sidebar',
+        'techorbit_adsense_slot_footer',
+
         // Branding
         'techorbit_site_logo',
         // Social
@@ -62,7 +65,10 @@ function techorbit_get_settings() {
         'adsense_publisher_id'  => get_option( 'techorbit_adsense_publisher_id', '' ),
         'adsense_slot_header'   => get_option( 'techorbit_adsense_slot_header', '' ),
         'adsense_slot_content'  => get_option( 'techorbit_adsense_slot_content', '' ),
+        'adsense_slot_content_after' => get_option( 'techorbit_adsense_slot_content_after', '' ),
         'adsense_slot_sidebar'  => get_option( 'techorbit_adsense_slot_sidebar', '' ),
+        'adsense_slot_footer'   => get_option( 'techorbit_adsense_slot_footer', '' ),
+
         'site_logo'             => get_option( 'techorbit_site_logo', '' ),
         'social_twitter'        => get_option( 'techorbit_social_twitter', 'https://x.com/PortalYojana' ),
         'social_instagram'      => get_option( 'techorbit_social_instagram', 'https://www.instagram.com/yojanaportal2110/' ),

@@ -25,6 +25,8 @@ $model_label = techorbit_ai_models()[ $model ] ?? $model;
 <div class="tool-page-layout">
     <div class="tool-main">
 
+        <?php techorbit_adsense( 'content' ); ?>
+
         <div class="tool-interface">
             <div class="tool-interface-header">
                 <span class="tool-interface-icon">🔑</span>
@@ -76,7 +78,7 @@ $model_label = techorbit_ai_models()[ $model ] ?? $model;
             </div>
         </div>
 
-        <div style="margin-top:32px;"><?php techorbit_adsense( 'content' ); ?></div>
+        <?php techorbit_adsense( 'content_after' ); ?>
 
         <div class="tool-description-section">
             <h2>What Is Keyword Clustering in SEO?</h2>
