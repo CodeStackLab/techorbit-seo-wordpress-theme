@@ -77,6 +77,7 @@ add_action( 'widgets_init', 'techorbit_widgets_init' );
    LOAD INCLUDES
    ============================================================ */
 require_once TECHORBIT_DIR . '/inc/settings.php';
+require_once TECHORBIT_DIR . '/inc/tools-config.php';
 require_once TECHORBIT_DIR . '/inc/enqueue.php';
 require_once TECHORBIT_DIR . '/inc/api-handler.php';
 require_once TECHORBIT_DIR . '/inc/seo-meta.php';

@@ -16,6 +16,10 @@ function techorbit_register_settings() {
         'techorbit_openai_api_key',
         'techorbit_gemini_api_key',
         'techorbit_default_ai_model',
+        'techorbit_openrouter_api_key',
+        'techorbit_openrouter_model',
+        'techorbit_enable_failover',
+        'techorbit_failover_order',
         // AdSense
         'techorbit_adsense_publisher_id',
         'techorbit_adsense_slot_header',
@@ -32,6 +36,8 @@ function techorbit_register_settings() {
         'techorbit_social_facebook',
         'techorbit_social_youtube',
         'techorbit_social_pinterest',
+        // Tools
+        'techorbit_tools_status',
     ];
 
     foreach ( $settings as $option ) {
@@ -61,7 +67,11 @@ function techorbit_get_settings() {
     return [
         'openai_api_key'        => get_option( 'techorbit_openai_api_key', '' ),
         'gemini_api_key'        => get_option( 'techorbit_gemini_api_key', '' ),
-        'default_ai_model'      => get_option( 'techorbit_default_ai_model', 'gpt-4o-mini' ),
+        'default_ai_model'      => get_option( 'techorbit_default_ai_model', 'gemini-flash-latest' ),
+        'openrouter_api_key'    => get_option( 'techorbit_openrouter_api_key', '' ),
+        'openrouter_model'      => get_option( 'techorbit_openrouter_model', 'google/gemma-2-9b-it:free' ),
+        'enable_failover'       => get_option( 'techorbit_enable_failover', '1' ),
+        'failover_order'        => get_option( 'techorbit_failover_order', 'openrouter,gemini,openai' ),
         'adsense_publisher_id'  => get_option( 'techorbit_adsense_publisher_id', '' ),
         'adsense_slot_header'   => get_option( 'techorbit_adsense_slot_header', '' ),
         'adsense_slot_content'  => get_option( 'techorbit_adsense_slot_content', '' ),
@@ -87,7 +97,15 @@ function techorbit_ai_models() {
         'gpt-4o'              => 'GPT-4o (OpenAI — Most Capable)',
         'gemini-1.5-flash'    => 'Gemini 1.5 Flash (Google — Fast)',
         'gemini-1.5-pro'      => 'Gemini 1.5 Pro (Google — Best Quality)',
+        'openrouter-auto'     => 'OpenRouter (Auto Select — Primary)',
     ];
+}
+
+/**
+ * Check if a model is an OpenRouter model.
+ */
+function techorbit_is_openrouter( $model ) {
+    return str_contains( $model, '/' ) || $model === 'openrouter-auto';
 }
 
 /**

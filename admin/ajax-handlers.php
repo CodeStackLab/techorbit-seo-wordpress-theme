@@ -26,6 +26,8 @@ function techorbit_test_api_connection() {
         $result = techorbit_test_openai( $api_key );
     } elseif ( $provider === 'gemini' ) {
         $result = techorbit_test_gemini( $api_key );
+    } elseif ( $provider === 'openrouter' ) {
+        $result = techorbit_test_openrouter( $api_key );
     } else {
         wp_send_json_error( [ 'message' => __( 'Unknown provider.', 'techorbit-seo' ) ] );
     }
@@ -94,6 +96,34 @@ function techorbit_test_gemini( $api_key ) {
     if ( $code !== 200 ) {
         $body = json_decode( wp_remote_retrieve_body( $response ), true );
         $msg  = $body['error']['message'] ?? 'Invalid API key or quota issue.';
+        return new WP_Error( 'api_fail', $msg );
+    }
+
+    return true;
+}
+
+/**
+ * Test OpenRouter key by listing a free model.
+ */
+function techorbit_test_openrouter( $api_key ) {
+    $response = wp_remote_get(
+        'https://openrouter.ai/api/v1/models',
+        [
+            'timeout' => 15,
+            'headers' => [
+                'Authorization' => 'Bearer ' . $api_key,
+            ],
+        ]
+    );
+
+    if ( is_wp_error( $response ) ) {
+        return new WP_Error( 'conn_fail', $response->get_error_message() );
+    }
+
+    $code = wp_remote_retrieve_response_code( $response );
+    if ( $code !== 200 ) {
+        $body = json_decode( wp_remote_retrieve_body( $response ), true );
+        $msg  = $body['error']['message'] ?? 'Invalid API key or account issue.';
         return new WP_Error( 'api_fail', $msg );
     }
 

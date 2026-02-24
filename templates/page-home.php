@@ -6,62 +6,14 @@
 
 get_header();
 
-// 35 Tools across 5 categories
-$tools = [
-    // SEO Tools
-    ['name'=>'AI Meta Generator','desc'=>'Generate optimised title tags & meta descriptions instantly.','icon'=>'🎯','cat'=>'seo','url'=>'/tools/meta-generator/','badge'=>'popular'],
-    ['name'=>'Keyword Cluster Tool','desc'=>'Group keywords by search intent for smarter content planning.','icon'=>'🗂','cat'=>'seo','url'=>'/tools/keyword-cluster/','badge'=>'popular'],
-    ['name'=>'FAQ Schema Generator','desc'=>'Create JSON-LD FAQ schema markup for Google rich results.','icon'=>'❓','cat'=>'seo','url'=>'/tools/faq-generator/','badge'=>''],
-    ['name'=>'Open Graph Tag Generator','desc'=>'Generate perfect OG tags for social media previews.','icon'=>'🔗','cat'=>'seo','url'=>'#','badge'=>''],
-    ['name'=>'Robots.txt Generator','desc'=>'Build a proper robots.txt file with custom rules.','icon'=>'🤖','cat'=>'seo','url'=>'#','badge'=>'new'],
-    ['name'=>'XML Sitemap Helper','desc'=>'Checklist and guide for generating perfect XML sitemaps.','icon'=>'🗺','cat'=>'seo','url'=>'#','badge'=>''],
-    ['name'=>'Canonical Tag Advisor','desc'=>'Prevent duplicate content with proper canonical tags.','icon'=>'🔁','cat'=>'seo','url'=>'#','badge'=>''],
-    ['name'=>'Title Tag Analyzer','desc'=>'Analyse and score your title tags for SEO effectiveness.','icon'=>'📊','cat'=>'seo','url'=>'#','badge'=>''],
+$all_tools   = techorbit_get_tools_registry();
+$categories  = techorbit_get_tool_categories();
+$tool_status = get_option('techorbit_tools_status', []);
 
-    // Content Tools
-    ['name'=>'Blog Outline Builder','desc'=>'Generate structured H1/H2/H3 blog outlines in seconds.','icon'=>'📝','cat'=>'content','url'=>'/tools/blog-outline/','badge'=>'popular'],
-    ['name'=>'Product Description Writer','desc'=>'Write compelling SEO-ready product descriptions.','icon'=>'🛒','cat'=>'content','url'=>'/tools/product-description/','badge'=>''],
-    ['name'=>'Blog Topic Generator','desc'=>'Get 10+ blog topic ideas from a single keyword.','icon'=>'💡','cat'=>'content','url'=>'#','badge'=>'new'],
-    ['name'=>'Paragraph Expander','desc'=>'Expand short sentences into rich, detailed paragraphs.','icon'=>'📄','cat'=>'content','url'=>'#','badge'=>''],
-    ['name'=>'Content Summarizer','desc'=>'Summarise long articles into key takeaways.','icon'=>'✂️','cat'=>'content','url'=>'#','badge'=>''],
-    ['name'=>'Headline Analyzer','desc'=>'Score your blog headlines for clicks and SEO.','icon'=>'📰','cat'=>'content','url'=>'#','badge'=>''],
-    ['name'=>'Intro Generator','desc'=>'Craft engaging article introductions that hook readers.','icon'=>'🪝','cat'=>'content','url'=>'#','badge'=>''],
-    ['name'=>'Conclusion Writer','desc'=>'Write strong conclusions with a clear call to action.','icon'=>'🏁','cat'=>'content','url'=>'#','badge'=>''],
-    ['name'=>'Article Rewriter','desc'=>'Rewrite content in a fresh voice while preserving meaning.','icon'=>'✏️','cat'=>'content','url'=>'#','badge'=>'new'],
-
-    // Keyword Tools
-    ['name'=>'LSI Keyword Generator','desc'=>'Find semantically-related keywords to enrich your content.','icon'=>'🔍','cat'=>'keyword','url'=>'#','badge'=>''],
-    ['name'=>'Long-tail Keyword Finder','desc'=>'Discover low-competition long-tail keyword opportunities.','icon'=>'📈','cat'=>'keyword','url'=>'#','badge'=>'new'],
-    ['name'=>'Search Intent Analyzer','desc'=>'Classify any keyword by informational, commercial or transactional intent.','icon'=>'🧭','cat'=>'keyword','url'=>'#','badge'=>''],
-    ['name'=>'Keyword Difficulty Estimator','desc'=>'Get a quick difficulty score for any keyword.','icon'=>'🏋️','cat'=>'keyword','url'=>'#','badge'=>''],
-    ['name'=>'Competitor Keyword Spy','desc'=>'Discover which keywords your competitors rank for.','icon'=>'🕵️','cat'=>'keyword','url'=>'#','badge'=>'new'],
-
-    // Technical SEO
-    ['name'=>'Schema Markup Generator','desc'=>'Generate structured data schema for any content type.','icon'=>'🏗','cat'=>'technical','url'=>'#','badge'=>''],
-    ['name'=>'Twitter Card Generator','desc'=>'Create Twitter card meta tags for better social sharing.','icon'=>'🐦','cat'=>'technical','url'=>'#','badge'=>''],
-    ['name'=>'Alt Text Generator','desc'=>'Generate descriptive alt text for images from AI.','icon'=>'🖼','cat'=>'technical','url'=>'#','badge'=>'new'],
-    ['name'=>'Core Web Vitals Advisor','desc'=>'Get actionable tips to improve LCP, CLS & FID.','icon'=>'⚡','cat'=>'technical','url'=>'#','badge'=>''],
-    ['name'=>'Hreflang Tag Builder','desc'=>'Build hreflang tags for multilingual SEO.','icon'=>'🌐','cat'=>'technical','url'=>'#','badge'=>''],
-    ['name'=>'JSON-LD Generator','desc'=>'Create custom JSON-LD structured data snippets.','icon'=>'{ }','cat'=>'technical','url'=>'#','badge'=>''],
-
-    // Social & Copywriting
-    ['name'=>'Social Media Caption Writer','desc'=>'Write engaging captions for Instagram, Facebook & LinkedIn.','icon'=>'📱','cat'=>'social','url'=>'#','badge'=>'new'],
-    ['name'=>'Hashtag Generator','desc'=>'Get relevant hashtags for any topic or niche.','icon'=>'#️⃣','cat'=>'social','url'=>'#','badge'=>''],
-    ['name'=>'LinkedIn Post Writer','desc'=>'Create professional LinkedIn posts that drive engagement.','icon'=>'💼','cat'=>'social','url'=>'#','badge'=>''],
-    ['name'=>'Twitter Thread Generator','desc'=>'Turn any blog post into a compelling Twitter thread.','icon'=>'🧵','cat'=>'social','url'=>'#','badge'=>'new'],
-    ['name'=>'Ad Copy Generator','desc'=>'Write high-converting Google & Facebook ad copy.','icon'=>'📣','cat'=>'social','url'=>'#','badge'=>''],
-    ['name'=>'Email Subject Line Writer','desc'=>'Craft irresistible email subject lines with AI.','icon'=>'📧','cat'=>'social','url'=>'#','badge'=>''],
-    ['name'=>'Call-to-Action Generator','desc'=>'Generate powerful CTAs for landing pages and blogs.','icon'=>'👆','cat'=>'social','url'=>'#','badge'=>''],
-];
-
-$categories = [
-    'all'       => ['label'=>'All Tools',      'count'=>count($tools)],
-    'seo'       => ['label'=>'SEO',            'count'=>count(array_filter($tools, fn($t)=>$t['cat']==='seo'))],
-    'content'   => ['label'=>'Content',        'count'=>count(array_filter($tools, fn($t)=>$t['cat']==='content'))],
-    'keyword'   => ['label'=>'Keywords',       'count'=>count(array_filter($tools, fn($t)=>$t['cat']==='keyword'))],
-    'technical' => ['label'=>'Technical SEO',  'count'=>count(array_filter($tools, fn($t)=>$t['cat']==='technical'))],
-    'social'    => ['label'=>'Social & Copy',  'count'=>count(array_filter($tools, fn($t)=>$t['cat']==='social'))],
-];
+// Filter tools based on status
+$tools = array_filter($all_tools, function($tool_slug) use ($tool_status) {
+    return !isset($tool_status[$tool_slug]) || $tool_status[$tool_slug] == '1';
+}, ARRAY_FILTER_USE_KEY);
 ?>
 
 <!-- ==================== HERO ==================== -->
@@ -79,8 +31,9 @@ $categories = [
 
             <!-- Search Bar -->
             <div class="hero-search">
-                <input type="text" class="hero-search-input" id="toolSearch" placeholder="Search 35+ tools — meta generator, keyword cluster…" oninput="filterBySearch(this.value)">
-                <button class="hero-search-btn" onclick="filterBySearch(document.getElementById('toolSearch').value)">Search</button>
+                <input type="text" class="hero-search-input" id="hero-search" placeholder="Search 35+ tools — meta generator, keyword cluster…" autocomplete="off">
+                <div id="search-suggestions" class="search-suggestions"></div>
+                <button class="hero-search-btn" id="hero-search-btn">Search</button>
             </div>
 
             <!-- Stats -->
@@ -284,7 +237,8 @@ function filterCat(cat, btn) {
 function filterBySearch(query) {
     // Clear category filter
     document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-    document.querySelector('[data-cat="all"]').classList.add('active');
+    const allBtn = document.querySelector('.cat-btn[data-cat="all"]');
+    if (allBtn) allBtn.classList.add('active');
     const q = query.toLowerCase().trim();
     let visible = 0;
     document.querySelectorAll('.tool-card').forEach(card => {

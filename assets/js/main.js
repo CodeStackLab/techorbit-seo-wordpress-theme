@@ -13,6 +13,7 @@
     initStatsCounter();
     initSmoothScroll();
     initNavHighlight();
+    initLiveSearch();
   });
 
   /* ---- STICKY HEADER ---- */
@@ -32,13 +33,19 @@
   /* ---- MOBILE MENU ---- */
   function initMobileMenu() {
     const toggleBtn = document.getElementById('mobile-menu-toggle');
-    const nav       = document.getElementById('primary-nav');
+    const nav = document.getElementById('primary-nav');
     if (!toggleBtn || !nav) return;
 
     toggleBtn.addEventListener('click', function () {
       const isOpen = nav.classList.toggle('open');
       toggleBtn.classList.toggle('active', isOpen);
       toggleBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+
+      if (isOpen) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
     });
 
     // Close on outside click
@@ -80,17 +87,17 @@
   }
 
   function animateCounter(el) {
-    const target   = parseInt(el.getAttribute('data-count'), 10);
-    const suffix   = el.getAttribute('data-suffix') || '';
+    const target = parseInt(el.getAttribute('data-count'), 10);
+    const suffix = el.getAttribute('data-suffix') || '';
     const duration = 1800;
-    const start    = performance.now();
+    const start = performance.now();
 
     function update(now) {
-      const elapsed  = now - start;
+      const elapsed = now - start;
       const progress = Math.min(elapsed / duration, 1);
       // Ease out cubic
-      const ease     = 1 - Math.pow(1 - progress, 3);
-      const current  = Math.round(ease * target);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      const current = Math.round(ease * target);
       el.textContent = current.toLocaleString() + suffix;
 
       if (progress < 1) {
@@ -126,7 +133,7 @@
         if (linkPath === currentPath || (linkPath !== '/' && currentPath.startsWith(linkPath))) {
           link.closest('li')?.classList.add('current-menu-item');
         }
-      } catch (e) {}
+      } catch (e) { }
     });
   }
 
@@ -169,6 +176,71 @@
       btnEl.innerHTML = original;
       btnEl.classList.remove('copied');
     }, 2000);
+  }
+
+  /* ---- LIVE SEARCH SUGGESTIONS ---- */
+  function initLiveSearch() {
+    const searchInput = document.getElementById('hero-search');
+    const suggestionsBox = document.getElementById('search-suggestions');
+    if (!searchInput || !suggestionsBox || !window.techorbit_vars || !window.techorbit_vars.tools_registry) return;
+
+    const tools = window.techorbit_vars.tools_registry;
+
+    searchInput.addEventListener('input', function () {
+      const query = this.value.toLowerCase().trim();
+      if (query.length < 2) {
+        suggestionsBox.classList.remove('active');
+        return;
+      }
+
+      const matches = Object.entries(tools).filter(([slug, tool]) => {
+        return tool.name.toLowerCase().includes(query) ||
+          tool.desc.toLowerCase().includes(query) ||
+          tool.cat.toLowerCase().includes(query);
+      }).slice(0, 6); // Limit to top 6
+
+      if (matches.length > 0) {
+        renderSuggestions(matches);
+        suggestionsBox.classList.add('active');
+      } else {
+        suggestionsBox.classList.remove('active');
+      }
+    });
+
+    function renderSuggestions(matches) {
+      const siteUrl = window.techorbit_vars.site_url;
+      suggestionsBox.innerHTML = matches.map(([slug, tool]) => {
+        // Ensure tool.url doesn't double slash
+        const rawUrl = tool.url || '';
+        const cleanUrl = rawUrl.startsWith('/') ? rawUrl.substring(1) : rawUrl;
+        const finalUrl = siteUrl + cleanUrl;
+
+        return `
+          <a href="${finalUrl}" class="suggestion-item">
+            <div class="suggestion-icon">${tool.icon}</div>
+            <div class="suggestion-info">
+              <div class="suggestion-name">${tool.name}</div>
+              <div class="suggestion-desc">${tool.desc}</div>
+            </div>
+            <div class="suggestion-cat">${tool.cat}</div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    // Close on outside click
+    document.addEventListener('click', function (e) {
+      if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+        suggestionsBox.classList.remove('active');
+      }
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        suggestionsBox.classList.remove('active');
+      }
+    });
   }
 
 })();

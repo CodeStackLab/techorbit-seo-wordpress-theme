@@ -11,12 +11,14 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * Register admin menu page.
  */
 function techorbit_admin_menu() {
-    add_options_page(
+    add_menu_page(
         __( 'TechOrbit AI Settings', 'techorbit-seo' ),
         __( 'TechOrbit AI', 'techorbit-seo' ),
         'manage_options',
         'techorbit-ai-settings',
-        'techorbit_admin_page_render'
+        'techorbit_admin_page_render',
+        'dashicons-chart-area', // Modern SEO/AI icon
+        26
     );
 }
 add_action( 'admin_menu', 'techorbit_admin_menu' );
@@ -59,6 +61,9 @@ function techorbit_admin_page_render() {
             </button>
             <button class="tab-btn" data-tab="social" role="tab" aria-selected="false" id="tab-social">
                 📱 <?php esc_html_e( 'Social Media', 'techorbit-seo' ); ?>
+            </button>
+            <button class="tab-btn" data-tab="tools-manager" role="tab" aria-selected="false" id="tab-tools">
+                🔧 <?php esc_html_e( 'Tools Manager', 'techorbit-seo' ); ?>
             </button>
         </nav>
 
@@ -137,6 +142,79 @@ function techorbit_admin_page_render() {
                             <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">aistudio.google.com</a>
                         </p>
                     </div>
+
+                    <hr style="margin: 30px 0; border: 0; border-top: 1px solid var(--border);">
+
+                    <!-- OpenRouter API Key -->
+                    <div class="settings-field">
+                        <label for="techorbit_openrouter_api_key" class="field-label">
+                            🟣 <?php esc_html_e( 'OpenRouter API Key (200+ Models)', 'techorbit-seo' ); ?>
+                        </label>
+                        <div class="api-key-wrap">
+                            <input type="password"
+                                   id="techorbit_openrouter_api_key"
+                                   name="techorbit_openrouter_api_key"
+                                   value="<?php echo esc_attr( $settings['openrouter_api_key'] ); ?>"
+                                   class="settings-input api-key-input"
+                                   placeholder="sk-or-v1-..."
+                                   autocomplete="off">
+                            <button type="button" class="toggle-key-btn" data-target="techorbit_openrouter_api_key" title="Show/hide key">👁</button>
+                            <button type="button" class="test-api-btn" data-provider="openrouter" id="test-openrouter-btn">
+                                <?php esc_html_e( 'Test Connection', 'techorbit-seo' ); ?>
+                            </button>
+                        </div>
+                        <span class="api-test-result" id="openrouter-test-result"></span>
+                        <p class="field-desc">
+                            <?php esc_html_e( 'Access GPT-4, Claude, Llama, and more via', 'techorbit-seo' ); ?>
+                            <a href="https://openrouter.ai/keys" target="_blank" rel="noopener">openrouter.ai</a>
+                        </p>
+                    </div>
+
+                    <!-- OpenRouter Custom Model -->
+                    <div class="settings-field">
+                        <label for="techorbit_openrouter_model" class="field-label">
+                            🚀 <?php esc_html_e( 'OpenRouter Custom Model', 'techorbit-seo' ); ?>
+                        </label>
+                        <input type="text"
+                               id="techorbit_openrouter_model"
+                               name="techorbit_openrouter_model"
+                               value="<?php echo esc_attr( $settings['openrouter_model'] ); ?>"
+                               class="settings-input"
+                               placeholder="e.g., anthropic/claude-3-opus:beta">
+                        <p class="field-desc"><?php esc_html_e( 'Enter any model string from OpenRouter. Example: "meta-llama/llama-3-70b-instruct", "google/gemma-2-9b-it:free"', 'techorbit-seo' ); ?></p>
+                    </div>
+
+                    <hr style="margin: 30px 0; border: 0; border-top: 1px solid var(--border);">
+
+                    <!-- Advanced Failover -->
+                    <div class="settings-field">
+                        <label class="field-label">🛡 <?php esc_html_e( 'Advanced Smart Failover', 'techorbit-seo' ); ?></label>
+                        <div style="display: flex; gap: 20px; align-items: start; margin-top: 10px;">
+                            <label class="techorbit-toggle">
+                                <input type="checkbox" name="techorbit_enable_failover" value="1" <?php checked( $settings['enable_failover'], '1' ); ?>>
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <div>
+                                <strong><?php esc_html_e( 'Enable Multi-Provider Fallback', 'techorbit-seo' ); ?></strong>
+                                <p class="field-desc" style="margin-top: 4px;"><?php esc_html_e( 'If the primary model fails or hits rate limits, the toolkit will automatically switch to the next available provider to prevent downtime.', 'techorbit-seo' ); ?></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Provider Priority -->
+                    <div class="settings-field">
+                        <label for="techorbit_failover_order" class="field-label">
+                            🔄 <?php esc_html_e( 'Failover Priority Order', 'techorbit-seo' ); ?>
+                        </label>
+                        <input type="text"
+                               id="techorbit_failover_order"
+                               name="techorbit_failover_order"
+                               value="<?php echo esc_attr( $settings['failover_order'] ); ?>"
+                               class="settings-input"
+                               placeholder="openrouter,gemini,openai">
+                        <p class="field-desc"><?php esc_html_e( 'Comma-separated list of providers to try in order. "free" is always added at the end as a survival backup.', 'techorbit-seo' ); ?></p>
+                    </div>
+
                 </div><!-- .settings-section -->
             </div><!-- #panel-ai-settings -->
 
@@ -258,6 +336,49 @@ function techorbit_admin_page_render() {
                                    placeholder="<?php echo esc_attr( $field[1] ); ?>">
                         </div>
                     <?php endforeach; ?>
+                </div>
+            </div>
+
+            <!-- ================================================
+                 TAB: TOOLS MANAGER
+                 ================================================ -->
+            <div class="tab-panel" id="panel-tools-manager" role="tabpanel" aria-labelledby="tab-tools">
+                <div class="settings-section">
+                    <h2><?php esc_html_e( 'Manage AI Tools', 'techorbit-seo' ); ?></h2>
+                    <p class="section-desc">
+                        <?php esc_html_e( 'Enable or disable individual tools from your 35+ SEO toolkit. Disabled tools will be hidden from the frontend.', 'techorbit-seo' ); ?>
+                    </p>
+
+                    <div class="admin-tools-manager-grid">
+                        <?php 
+                        $all_tools      = techorbit_get_tools_registry();
+                        $saved_stats    = get_option('techorbit_tools_status', []);
+                        
+                        $current_cat = '';
+                        foreach ($all_tools as $tool_slug => $tool) : 
+                            if ($current_cat !== $tool['cat']) :
+                                $current_cat = $tool['cat'];
+                                echo '<div class="admin-tools-cat-header">' . esc_html(ucfirst($current_cat)) . ' Tools</div>';
+                            endif;
+
+                            // Default to enabled (true) if not set
+                            $is_enabled = !isset($saved_stats[$tool_slug]) || $saved_stats[$tool_slug] == '1';
+                        ?>
+                            <div class="admin-tool-toggle-item">
+                                <div class="admin-tool-info">
+                                    <span class="admin-tool-icon"><?php echo $tool['icon']; ?></span>
+                                    <div class="admin-tool-text">
+                                        <strong><?php echo esc_html($tool['name']); ?></strong>
+                                        <p><?php echo esc_html($tool['desc']); ?></p>
+                                    </div>
+                                </div>
+                                <label class="techorbit-admin-switch">
+                                    <input type="checkbox" name="techorbit_tools_status[<?php echo esc_attr($tool_slug); ?>]" value="1" <?php checked($is_enabled); ?>>
+                                    <span class="admin-switch-slider"></span>
+                                </label>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
             </div>
 

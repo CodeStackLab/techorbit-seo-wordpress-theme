@@ -34,20 +34,30 @@ $adsense_id   = $settings['adsense_id'] ?? '';
             </a>
 
             <!-- Primary Nav -->
-            <nav class="primary-nav" aria-label="Primary Navigation">
+            <nav class="primary-nav" id="primary-nav" aria-label="Primary Navigation">
                 <?php wp_nav_menu([
                     'theme_location' => 'primary',
                     'menu_class'     => 'nav-menu',
                     'container'      => false,
                     'fallback_cb'    => function() { ?>
                         <ul class="nav-menu">
-                            <li><a href="<?php echo esc_url(home_url('/')); ?>">Home</a></li>
-                            <li><a href="<?php echo esc_url(home_url('/tools/')); ?>">Tools</a></li>
-                            <li><a href="<?php echo esc_url(home_url('/blog/')); ?>">Blog</a></li>
-                            <li><a href="<?php echo esc_url(home_url('/about/')); ?>">About</a></li>
+                            <li><a href="<?php echo esc_url(home_url('/')); ?>">🏠 Home</a></li>
+                            <li><a href="<?php echo esc_url(home_url('/tools/')); ?>">🛠 SEO Tools</a></li>
+                            <li><a href="<?php echo esc_url(home_url('/blog/')); ?>">📝 Blog</a></li>
+                            <li><a href="<?php echo esc_url(home_url('/about/')); ?>">ℹ️ About</a></li>
                         </ul>
                     <?php }
                 ]); ?>
+                
+                <!-- Mobile Only Auth -->
+                <div class="mobile-auth-links">
+                    <?php if ( is_user_logged_in() ) : ?>
+                        <a href="<?php echo esc_url( home_url( '/logout/' ) ); ?>" class="btn-signup-link"><?php esc_html_e( 'Logout', 'techorbit-seo' ); ?></a>
+                    <?php else : ?>
+                        <a href="<?php echo esc_url( home_url( '/login/' ) ); ?>" class="btn-login-link"><?php esc_html_e( 'Log in', 'techorbit-seo' ); ?></a>
+                        <a href="<?php echo esc_url( home_url( '/register/' ) ); ?>" class="btn-signup-link"><?php esc_html_e( 'Sign up', 'techorbit-seo' ); ?></a>
+                    <?php endif; ?>
+                </div>
             </nav>
 
             <!-- Header Actions -->
@@ -64,7 +74,7 @@ $adsense_id   = $settings['adsense_id'] ?? '';
                 <a href="<?php echo esc_url(home_url('/tools/')); ?>" class="btn-nav-tools">
                     🛠 All Tools
                 </a>
-                <button class="mobile-menu-toggle" id="mobileMenuBtn" aria-label="Toggle menu" aria-expanded="false">
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu" aria-expanded="false">
                     <span class="hamburger-line"></span>
                     <span class="hamburger-line"></span>
                     <span class="hamburger-line"></span>
@@ -79,4 +89,6 @@ $adsense_id   = $settings['adsense_id'] ?? '';
 // Header Ad Slot
 techorbit_adsense( 'header' ); 
 ?>
+
+<div id="main-content" class="site-main">
 

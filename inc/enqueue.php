@@ -40,6 +40,7 @@ function techorbit_enqueue_scripts() {
         'templates/page-faq-generator.php',
         'templates/page-product-desc.php',
         'templates/page-tools.php',
+        'page-tools-single.php',
     ] ) ) {
         wp_enqueue_style( 'techorbit-tools', $theme_uri . '/assets/css/tools.css', [], $tools_css_ver );
     }
@@ -54,6 +55,7 @@ function techorbit_enqueue_scripts() {
         'templates/page-keyword-cluster.php',
         'templates/page-faq-generator.php',
         'templates/page-product-desc.php',
+        'page-tools-single.php',
     ] ) ) {
         wp_enqueue_script( 'techorbit-ai-tools', $theme_uri . '/assets/js/ai-tools.js', [ 'techorbit-main' ], $ai_js_ver, true );
     }
@@ -64,12 +66,14 @@ function techorbit_enqueue_scripts() {
         'nonce'       => wp_create_nonce( 'techorbit_ai_nonce' ),
         'site_url'    => home_url( '/' ),
         'tools_url'   => home_url( '/tools/' ),
+        'tools_registry' => techorbit_get_tools_registry(),
         'is_tool_page' => is_page_template( [
             'templates/page-meta-generator.php',
             'templates/page-blog-outline.php',
             'templates/page-keyword-cluster.php',
             'templates/page-faq-generator.php',
             'templates/page-product-desc.php',
+            'page-tools-single.php',
         ] ) ? 'yes' : 'no',
         'strings'     => [
             'copy_success'   => __( 'Copied to clipboard!', 'techorbit-seo' ),

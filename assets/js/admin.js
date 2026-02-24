@@ -33,7 +33,14 @@ jQuery(function ($) {
     $('.test-api-btn').on('click', function () {
         const btn = $(this);
         const provider = btn.data('provider');
-        const keyInput = provider === 'openai' ? $('#techorbit_openai_api_key') : $('#techorbit_gemini_api_key');
+        let keyInput;
+        if (provider === 'openai') {
+            keyInput = $('#techorbit_openai_api_key');
+        } else if (provider === 'gemini') {
+            keyInput = $('#techorbit_gemini_api_key');
+        } else {
+            keyInput = $('#techorbit_openrouter_api_key');
+        }
         const resultEl = $('#' + provider + '-test-result');
         const apiKey = keyInput.val().trim();
 
