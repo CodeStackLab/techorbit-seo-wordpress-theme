@@ -26,6 +26,8 @@ function techorbit_test_api_connection() {
         $result = techorbit_test_openai( $api_key );
     } elseif ( $provider === 'gemini' ) {
         $result = techorbit_test_gemini( $api_key );
+    } elseif ( $provider === 'groq' ) {
+        $result = techorbit_test_groq( $api_key );
     } elseif ( $provider === 'openrouter' ) {
         $result = techorbit_test_openrouter( $api_key );
     } else {
@@ -124,6 +126,40 @@ function techorbit_test_openrouter( $api_key ) {
     if ( $code !== 200 ) {
         $body = json_decode( wp_remote_retrieve_body( $response ), true );
         $msg  = $body['error']['message'] ?? 'Invalid API key or account issue.';
+        return new WP_Error( 'api_fail', $msg );
+    }
+
+    return true;
+}
+
+/**
+ * Test Groq key with a minimal completion request.
+ */
+function techorbit_test_groq( $api_key ) {
+    $response = wp_remote_post(
+        'https://api.groq.com/openai/v1/chat/completions',
+        [
+            'timeout' => 15,
+            'headers' => [
+                'Authorization' => 'Bearer ' . $api_key,
+                'Content-Type'  => 'application/json',
+            ],
+            'body' => wp_json_encode( [
+                'model'       => 'llama-3.1-8b-instant',
+                'messages'    => [ [ 'role' => 'user', 'content' => 'ok' ] ],
+                'max_tokens'  => 5,
+            ] ),
+        ]
+    );
+
+    if ( is_wp_error( $response ) ) {
+        return new WP_Error( 'conn_fail', $response->get_error_message() );
+    }
+
+    $code = wp_remote_retrieve_response_code( $response );
+    if ( $code !== 200 ) {
+        $body = json_decode( wp_remote_retrieve_body( $response ), true );
+        $msg  = $body['error']['message'] ?? 'Invalid API key or Groq issue.';
         return new WP_Error( 'api_fail', $msg );
     }
 

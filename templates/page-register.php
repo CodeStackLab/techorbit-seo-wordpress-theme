@@ -41,7 +41,9 @@ get_header();
                         <input type="email" name="user_email" id="user_email" class="auth-input" value="" size="25" required>
                     </div>
 
-                    <p class="auth-notice">Registration confirmation will be emailed to you.</p>
+                    <p class="auth-notice" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; padding: 10px; border-radius: 6px; font-size: 0.85rem; border: 1px solid rgba(245, 158, 11, 0.2);">
+                        ⚠️ <strong>Important</strong>: You will receive an activation link via email. You must click it to log in.
+                    </p>
 
                     <div class="auth-submit">
                         <input type="submit" name="wp-submit" id="wp-submit" class="btn-auth-submit" value="Sign Up">

@@ -31,7 +31,7 @@ $tools = array_filter($all_tools, function($tool_slug) use ($tool_status) {
 
             <!-- Search Bar -->
             <div class="hero-search">
-                <input type="text" class="hero-search-input" id="hero-search" placeholder="Search 35+ tools — meta generator, keyword cluster…" autocomplete="off">
+                <input type="text" class="hero-search-input" id="hero-search" placeholder="Search 35+ tools — meta generator, keyword cluster…" autocomplete="off" oninput="filterBySearch(this.value)">
                 <div id="search-suggestions" class="search-suggestions"></div>
                 <button class="hero-search-btn" id="hero-search-btn">Search</button>
             </div>
@@ -62,7 +62,13 @@ $tools = array_filter($all_tools, function($tool_slug) use ($tool_status) {
 <!-- ==================== TRUST STRIP ==================== -->
 <div class="trust-strip">
     <div class="container">
-        <div class="trust-strip-inner">
+        <div class="trust-strip-inner" id="trustStrip">
+            <div class="trust-item"><span class="trust-icon">⚡</span><div><span>Instant Results</span><small>No sign-up needed</small></div></div>
+            <div class="trust-item"><span class="trust-icon">🤖</span><div><span>GPT-4o + Gemini</span><small>Latest AI models</small></div></div>
+            <div class="trust-item"><span class="trust-icon">🔒</span><div><span>Privacy First</span><small>No data stored</small></div></div>
+            <div class="trust-item"><span class="trust-icon">📱</span><div><span>Mobile Friendly</span><small>Works everywhere</small></div></div>
+            <div class="trust-item"><span class="trust-icon">🔄</span><div><span>Always Updated</span><small>New tools weekly</small></div></div>
+            <!-- Duplicated for seamless marquee -->
             <div class="trust-item"><span class="trust-icon">⚡</span><div><span>Instant Results</span><small>No sign-up needed</small></div></div>
             <div class="trust-item"><span class="trust-icon">🤖</span><div><span>GPT-4o + Gemini</span><small>Latest AI models</small></div></div>
             <div class="trust-item"><span class="trust-icon">🔒</span><div><span>Privacy First</span><small>No data stored</small></div></div>
@@ -81,16 +87,20 @@ $tools = array_filter($all_tools, function($tool_slug) use ($tool_status) {
             <p>Everything you need to dominate search rankings — from keyword research to schema markup.</p>
         </div>
 
-        <!-- Category Filter -->
-        <div class="category-filter" id="catFilter">
-            <?php foreach ($categories as $key => $cat) : ?>
-            <button class="cat-btn <?php echo $key === 'all' ? 'active' : ''; ?>"
-                    data-cat="<?php echo esc_attr($key); ?>"
-                    onclick="filterCat('<?php echo esc_attr($key); ?>', this)">
-                <?php echo esc_html($cat['label']); ?>
-                <span class="cat-count"><?php echo $cat['count']; ?></span>
-            </button>
-            <?php endforeach; ?>
+        <!-- Category Filter with Arrows -->
+        <div class="cat-filter-wrap">
+            <button class="cat-arrow left" id="catArrowLeft" aria-label="Scroll left">‹</button>
+            <div class="category-filter" id="catFilter">
+                <?php foreach ($categories as $key => $cat) : ?>
+                <button class="cat-btn <?php echo $key === 'all' ? 'active' : ''; ?>"
+                        data-cat="<?php echo esc_attr($key); ?>"
+                        onclick="filterCat('<?php echo esc_attr($key); ?>', this)">
+                    <?php echo esc_html($cat['label']); ?>
+                    <span class="cat-count"><?php echo $cat['count']; ?></span>
+                </button>
+                <?php endforeach; ?>
+            </div>
+            <button class="cat-arrow right" id="catArrowRight" aria-label="Scroll right">›</button>
         </div>
 
         <!-- Tools Grid -->
@@ -224,32 +234,60 @@ function filterCat(cat, btn) {
     document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     // Clear search
-    document.getElementById('toolSearch').value = '';
+    const searchInput = document.getElementById('hero-search');
+    if (searchInput) searchInput.value = '';
+    
     // Filter cards
     let visible = 0;
-    document.querySelectorAll('.tool-card').forEach(card => {
+    document.querySelectorAll('#toolsGrid .tool-card').forEach(card => {
         const match = cat === 'all' || card.dataset.cat === cat;
         card.style.display = match ? 'block' : 'none';
         if (match) visible++;
     });
-    document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+    const noResults = document.getElementById('noResults');
+    if (noResults) noResults.style.display = visible === 0 ? 'block' : 'none';
 }
 function filterBySearch(query) {
     // Clear category filter
     document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
     const allBtn = document.querySelector('.cat-btn[data-cat="all"]');
     if (allBtn) allBtn.classList.add('active');
+    
     const q = query.toLowerCase().trim();
     let visible = 0;
-    document.querySelectorAll('.tool-card').forEach(card => {
+    document.querySelectorAll('#toolsGrid .tool-card').forEach(card => {
         const name = card.dataset.name || '';
         const desc = card.querySelector('p')?.textContent.toLowerCase() || '';
         const match = !q || name.includes(q) || desc.includes(q);
         card.style.display = match ? 'block' : 'none';
         if (match) visible++;
     });
-    document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+    const noResults = document.getElementById('noResults');
+    if (noResults) noResults.style.display = visible === 0 ? 'block' : 'none';
 }
+</script>
+
+<!-- Mobile enhancements JS -->
+<script>
+// Auto-slide trust strip on all screens
+(function() {
+    const strip = document.getElementById('trustStrip');
+    if (strip) strip.classList.add('auto-slide');
+})();
+
+// Category arrow scroll
+(function() {
+    const filter = document.getElementById('catFilter');
+    const leftBtn = document.getElementById('catArrowLeft');
+    const rightBtn = document.getElementById('catArrowRight');
+    if (!filter || !leftBtn || !rightBtn) return;
+    leftBtn.addEventListener('click', function() {
+        filter.scrollBy({ left: -200, behavior: 'smooth' });
+    });
+    rightBtn.addEventListener('click', function() {
+        filter.scrollBy({ left: 200, behavior: 'smooth' });
+    });
+})();
 </script>
 
 <?php

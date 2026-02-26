@@ -11,6 +11,7 @@ $adsense_id   = $settings['adsense_id'] ?? '';
 <head>
 <meta charset="<?php bloginfo('charset'); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" href="<?php echo esc_url( get_template_directory_uri() . '/assets/img/favicon.png?v=' . time() ); ?>" />
 <?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>
@@ -45,12 +46,16 @@ $adsense_id   = $settings['adsense_id'] ?? '';
                             <li><a href="<?php echo esc_url(home_url('/tools/')); ?>">🛠 SEO Tools</a></li>
                             <li><a href="<?php echo esc_url(home_url('/blog/')); ?>">📝 Blog</a></li>
                             <li><a href="<?php echo esc_url(home_url('/about/')); ?>">ℹ️ About</a></li>
+                            <li><a href="<?php echo esc_url(home_url('/contact/')); ?>">📧 Contact Us</a></li>
                         </ul>
                     <?php }
                 ]); ?>
                 
                 <!-- Mobile Only Auth -->
                 <div class="mobile-auth-links">
+                    <a href="<?php echo esc_url(home_url('/tools/')); ?>" class="btn-signup-link mobile-tools-btn" style="background: var(--gradient-vibrant); margin-bottom: 8px;">
+                        🛠 Explore All Tools
+                    </a>
                     <?php if ( is_user_logged_in() ) : ?>
                         <a href="<?php echo esc_url( home_url( '/logout/' ) ); ?>" class="btn-signup-link"><?php esc_html_e( 'Logout', 'techorbit-seo' ); ?></a>
                     <?php else : ?>
@@ -71,7 +76,7 @@ $adsense_id   = $settings['adsense_id'] ?? '';
                     <?php endif; ?>
                 </div>
 
-                <a href="<?php echo esc_url(home_url('/tools/')); ?>" class="btn-nav-tools">
+                <a href="<?php echo esc_url(home_url('/tools/')); ?>" class="btn-nav-tools hide-mobile">
                     🛠 All Tools
                 </a>
                 <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu" aria-expanded="false">

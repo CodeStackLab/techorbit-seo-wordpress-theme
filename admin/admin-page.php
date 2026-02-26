@@ -143,6 +143,31 @@ function techorbit_admin_page_render() {
                         </p>
                     </div>
 
+                    <!-- Groq API Key -->
+                    <div class="settings-field">
+                        <label for="techorbit_groq_api_key" class="field-label">
+                            🟠 <?php esc_html_e( 'Groq API Key (High Speed)', 'techorbit-seo' ); ?>
+                        </label>
+                        <div class="api-key-wrap">
+                            <input type="password"
+                                   id="techorbit_groq_api_key"
+                                   name="techorbit_groq_api_key"
+                                   value="<?php echo esc_attr( $settings['groq_api_key'] ); ?>"
+                                   class="settings-input api-key-input"
+                                   placeholder="gsk_..."
+                                   autocomplete="off">
+                            <button type="button" class="toggle-key-btn" data-target="techorbit_groq_api_key" title="Show/hide key">👁</button>
+                            <button type="button" class="test-api-btn" data-provider="groq" id="test-groq-btn">
+                                <?php esc_html_e( 'Test Connection', 'techorbit-seo' ); ?>
+                            </button>
+                        </div>
+                        <span class="api-test-result" id="groq-test-result"></span>
+                        <p class="field-desc">
+                            <?php esc_html_e( 'Get your key at', 'techorbit-seo' ); ?>
+                            <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com</a>
+                        </p>
+                    </div>
+
                     <hr style="margin: 30px 0; border: 0; border-top: 1px solid var(--border);">
 
                     <!-- OpenRouter API Key -->

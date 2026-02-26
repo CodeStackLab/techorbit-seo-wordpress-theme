@@ -29,6 +29,14 @@ get_header();
                 if ( isset( $_GET['login'] ) && $_GET['login'] === 'failed' ) {
                     echo '<div class="auth-error">Invalid username or password. Please try again.</div>';
                 }
+                
+                if ( isset( $_GET['verified'] ) && $_GET['verified'] === 'success' ) {
+                    echo '<div class="auth-success" style="background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(16, 185, 129, 0.2);">✅ Account activated! You can now log in.</div>';
+                }
+
+                if ( isset( $_GET['checkemail'] ) && $_GET['checkemail'] === 'registered' ) {
+                    echo '<div class="auth-info" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(59, 130, 246, 0.2);">📧 Almost there! Please check your email to activate your account.</div>';
+                }
                 ?>
                 
                 <form name="loginform" id="loginform" action="<?php echo esc_url( site_url( 'wp-login.php', 'login_post' ) ); ?>" method="post">

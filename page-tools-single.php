@@ -48,14 +48,14 @@ $tool_id = $slug === 'product-description' ? 'product-desc' : $slug;
                     <form id="ai-tool-form" data-tool="<?php echo esc_attr($tool_id); ?>">
                         <div class="form-group">
                             <label for="tool_input">Describe what you need</label>
-                            <textarea name="tool_input" id="tool_input" placeholder="e.g., Sustainable Fashion, SEO Strategy for Realtors..." required></textarea>
+                            <textarea name="tool_input" id="tool_input" class="tool-input" placeholder="e.g., Sustainable Fashion, SEO Strategy for Realtors..." required></textarea>
                             <div id="char-counter">0 characters</div>
                         </div>
 
                         <?php if ($tool_id === 'product-desc' || $tool_id === 'paragraph-expander' || $tool_id === 'schema-generator'): ?>
                         <div class="form-group" style="margin-top:24px;">
                             <label for="tool_input2">Additional Context (Optional)</label>
-                            <textarea name="tool_input2" id="tool_input2" placeholder="e.g., Target audience, key features, specific keywords to include..."></textarea>
+                            <textarea name="tool_input2" id="tool_input2" class="tool-input" placeholder="e.g., Target audience, key features, specific keywords to include..."></textarea>
                         </div>
                         <?php endif; ?>
 
@@ -77,10 +77,10 @@ $tool_id = $slug === 'product-description' ? 'product-desc' : $slug;
                     <div id="tool-error" class="tool-error-msg" style="display:none; margin-top:24px; padding:16px; background:#FEF2F2; color:#DC2626; border-radius:12px; border:1px solid #FCA5A5;"></div>
 
                     <!-- Output Block -->
-                    <div id="tool-output" class="tool-output-block" style="display:none; margin-top:40px;">
+                    <div id="tool-output" class="tool-output-block" style="display:none; margin-top:16px;">
                         <div class="output-header">
-                            <span class="output-label">Generated content</span>
-                            <button class="btn-copy" onclick="copyResult(this)">📋 Copy</button>
+                            <div class="output-label">Generated content</div>
+                            <button class="btn-copy" onclick="copyResult(this)">📋Copy</button>
                         </div>
                         <div id="output-content" class="output-content"></div>
                     </div>

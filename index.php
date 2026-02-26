@@ -18,31 +18,29 @@ get_header();
     <main class="site-main" id="main" role="main">
 
         <?php if ( have_posts() ) : ?>
+            <div class="article-grid">
+                <?php while ( have_posts() ) : the_post(); ?>
+                    <article id="post-<?php the_ID(); ?>" <?php post_class( 'post-card' ); ?>>
+                        <?php if ( has_post_thumbnail() ) : ?>
+                            <div class="post-thumb">
+                                <a href="<?php the_permalink(); ?>">
+                                    <?php the_post_thumbnail( 'techorbit-card' ); ?>
+                                </a>
+                            </div>
+                        <?php endif; ?>
 
-            <?php while ( have_posts() ) : the_post(); ?>
-                <article id="post-<?php the_ID(); ?>" <?php post_class( 'post-card' ); ?>>
-                    <?php if ( has_post_thumbnail() ) : ?>
-                        <div class="post-card-image">
-                            <a href="<?php the_permalink(); ?>" aria-label="<?php the_title_attribute(); ?>">
-                                <?php the_post_thumbnail( 'techorbit-card', [ 'loading' => 'lazy' ] ); ?>
-                            </a>
+                        <div class="post-body">
+                            <div class="post-meta">
+                                <span class="post-cat"><?php the_category( ', ' ); ?></span>
+                                <span class="post-date"><?php echo get_the_date(); ?></span>
+                            </div>
+                            <h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
+                            <p class="post-excerpt"><?php echo techorbit_excerpt( get_the_ID(), 25 ); ?></p>
+                            <a href="<?php the_permalink(); ?>" class="post-read-more">Read More →</a>
                         </div>
-                    <?php endif; ?>
-
-                    <div class="post-card-body">
-                        <div class="post-meta">
-                            <span>📁 <?php the_category( ', ' ); ?></span>
-                            <span>📅 <?php echo esc_html( get_the_date() ); ?></span>
-                            <span>⏱ <?php echo esc_html( techorbit_reading_time() ); ?></span>
-                        </div>
-                        <h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
-                        <p class="post-excerpt"><?php echo esc_html( techorbit_excerpt( get_the_ID(), 30 ) ); ?></p>
-                        <a href="<?php the_permalink(); ?>" class="read-more">
-                            <?php esc_html_e( 'Read Article', 'techorbit-seo' ); ?> →
-                        </a>
-                    </div>
-                </article>
-            <?php endwhile; ?>
+                    </article>
+                <?php endwhile; ?>
+            </div>
 
             <div class="pagination">
                 <?php

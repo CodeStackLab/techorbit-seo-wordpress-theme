@@ -38,6 +38,8 @@ jQuery(function ($) {
             keyInput = $('#techorbit_openai_api_key');
         } else if (provider === 'gemini') {
             keyInput = $('#techorbit_gemini_api_key');
+        } else if (provider === 'groq') {
+            keyInput = $('#techorbit_groq_api_key');
         } else {
             keyInput = $('#techorbit_openrouter_api_key');
         }

@@ -39,6 +39,18 @@ $tools = array_filter($all_tools, function($tool_slug) use ($tool_status) {
 </section>
 
 <div class="container" style="padding-top:40px; padding-bottom:80px;">
+    <!-- Category Filter -->
+    <div class="category-filter" id="catFilter" style="margin-bottom: 40px; justify-content: center; display: flex; flex-wrap: wrap; gap: 12px;">
+        <?php foreach ($categories as $key => $cat) : ?>
+        <button class="cat-btn <?php echo $key === 'all' ? 'active' : ''; ?>"
+                data-cat="<?php echo esc_attr($key); ?>"
+                onclick="filterDirectoryCat('<?php echo esc_attr($key); ?>', this)">
+            <?php echo esc_html($cat['label']); ?>
+            <span class="cat-count"><?php echo $cat['count']; ?></span>
+        </button>
+        <?php endforeach; ?>
+    </div>
+
     <div class="tools-grid" id="directoryGrid">
         <?php foreach ($tools as $tool) :
             $link = !empty($tool['url']) && $tool['url'] !== '#'
@@ -83,16 +95,39 @@ $tools = array_filter($all_tools, function($tool_slug) use ($tool_status) {
 </div>
 
 <script>
+let currentCat = 'all';
+
+function filterDirectoryCat(cat, btn) {
+    // Update active button
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentCat = cat;
+    
+    // Trigger filter with current search value
+    const searchVal = document.getElementById('hero-search').value;
+    filterDirectory(searchVal);
+}
+
 function filterDirectory(query) {
     const q = query.toLowerCase().trim();
     let visible = 0;
+    
     document.querySelectorAll('#directoryGrid .tool-card').forEach(card => {
         const name = card.dataset.name || '';
         const desc = card.dataset.desc || '';
-        const match = !q || name.includes(q) || desc.includes(q);
+        const cat = card.dataset.cat || '';
+        
+        // Match category
+        const catMatch = currentCat === 'all' || cat === currentCat;
+        // Match search query
+        const searchMatch = !q || name.includes(q) || desc.includes(q);
+        
+        const match = catMatch && searchMatch;
+        
         card.style.display = match ? 'block' : 'none';
         if (match) visible++;
     });
+    
     document.getElementById('noDirResults').style.display = visible === 0 ? 'block' : 'none';
 }
 </script>

@@ -44,59 +44,55 @@ function techorbit_ai_call() {
 
     // 4. Get settings
     $settings      = techorbit_get_settings();
-    $primary_model = $settings['default_ai_model'];
-    $enable_failover = $settings['enable_failover'];
-    $failover_order  = explode( ',', $settings['failover_order'] );
+    $primary_model = 'gemini-flash-lite-latest'; 
+    $enable_failover = true;
     
-    // Always include a free model as a final survival fallback
-    if ( ! in_array( 'free', $failover_order ) ) {
-        $failover_order[] = 'free';
-    }
-
+    // Failover order
+    $failover_order = [ 'groq', 'gemini', 'openai', 'openrouter', 'free' ];
+    
     // 5. Build prompt
     $prompt = techorbit_build_prompt( $tool, $user_input, $input2 );
     if ( is_wp_error( $prompt ) ) {
         wp_send_json_error( [ 'message' => $prompt->get_error_message() ] );
     }
-
+    
     // 6. Call AI with Failover Loop
     $final_result = null;
     $errors       = [];
 
     foreach ( $failover_order as $provider ) {
-        $provider = trim( $provider );
-        $result   = null;
+        $result = null;
 
         switch ( $provider ) {
-            case 'openrouter':
-                $or_model = $settings['openrouter_model'] ?: 'google/gemma-2-9b-it:free';
-                $result   = techorbit_call_openrouter( $prompt, $or_model );
-                break;
             case 'gemini':
-                $gem_model = str_starts_with( $primary_model, 'gemini' ) ? $primary_model : 'gemini-1.5-flash';
-                $result    = techorbit_call_gemini( $prompt, $gem_model );
+                // Use Gemini Flash-Lite Latest (highest quota availability)
+                $result = techorbit_call_gemini( $prompt, 'gemini-1.5-flash' );
+                break;
+            case 'groq':
+                $result = techorbit_call_groq( $prompt, 'llama-3.3-70b-versatile' );
                 break;
             case 'openai':
-                $oa_model = str_starts_with( $primary_model, 'gpt' ) ? $primary_model : 'gpt-4o-mini';
-                $result   = techorbit_call_openai( $prompt, $oa_model );
+                $result = techorbit_call_openai( $prompt, 'gpt-4o-mini' );
+                break;
+            case 'openrouter':
+                $result = techorbit_call_openrouter( $prompt, 'google/gemma-2-9b-it:free' );
                 break;
             case 'free':
-                // Absolute fallback using a free OpenRouter model
                 $result = techorbit_call_openrouter( $prompt, 'google/gemma-2-9b-it:free' );
                 break;
         }
 
         if ( $result && ! is_wp_error( $result ) ) {
             $final_result = $result;
-            break; // Success! Exit loop.
+            break; 
         } else if ( is_wp_error( $result ) ) {
             $errors[] = strtoupper($provider) . ': ' . $result->get_error_message();
-            if ( ! $enable_failover ) break; // Stop if failover is disabled
+            if ( ! $enable_failover ) break; 
         }
     }
 
     if ( ! $final_result ) {
-        $error_msg = __( 'All AI providers failed or reached limits.', 'techorbit-seo' );
+        $error_msg = __( 'API not working. All providers are currently unavailable.', 'techorbit-seo' );
         if ( ! empty( $errors ) ) {
             $error_msg .= ' Details: ' . implode( ' | ', $errors );
         }
@@ -114,49 +110,174 @@ add_action( 'wp_ajax_nopriv_techorbit_ai_call', 'techorbit_ai_call' );
 function techorbit_build_prompt( $tool, $input, $input2 = '' ) {
     $prompts = [
         // SEO Tools
-        'meta-generator' => "You are an SEO expert. Generate an optimized SEO meta title (max 60 characters) and meta description (max 160 characters) for the following topic: {INPUT}. Return ONLY valid JSON in this exact format: {\"title\": \"...\", \"description\": \"...\"}",
-        'blog-outline'   => "You are an SEO content strategist. Create a detailed SEO-optimized blog post outline for the topic: {INPUT}. Include an H1 title, multiple H2 sections with H3 sub-sections, an introduction hook, and a conclusion section. Format as a clean structured outline with proper indentation.",
-        'keyword-cluster' => "You are an SEO keyword research expert. Generate 5 keyword clusters for the main keyword: {INPUT}. For each cluster provide: cluster name, 5 related long-tail keywords, and search intent (informational/commercial/transactional/navigational). Return ONLY valid JSON array in this format: [{\"cluster\": \"...\", \"keywords\": [\"...\"], \"intent\": \"...\"}]",
-        'faq-generator'   => "Generate 8 SEO-optimized frequently asked questions and answers for the topic: {INPUT}. Format the output as a valid Schema.org FAQPage JSON-LD <script> tag, ready to paste into HTML. Only output the complete script tag with no other text.",
-        'product-desc'    => "You are an e-commerce SEO copywriter. Write an SEO-optimized product description for: {INPUT}. Key features and details: {INPUT2}. Include the focus keyword naturally, use benefits-first writing style, and end with a soft call to action. Write 150-300 words in a professional yet engaging tone.",
-        'og-tag-generator' => "Generate Open Graph (OG) meta tags for: {INPUT}. Include og:title, og:description, og:type, and og:site_name. Return the raw HTML meta tags.",
-        'robots-generator' => "Generate a robots.txt file content for a website about: {INPUT}. Include standard rules for Sitemap and disallow rules for common sensitive paths like /admin, /wp-admin, etc.",
-        'sitemap-helper'   => "Create an XML sitemap checklist or a mock XML sitemap structure for: {INPUT}. Explain best practices for sitemap priority and frequency.",
-        'canonical-advisor' => "Explain the correct canonical tag strategy for a page about {INPUT}. Provide the specific <link rel='canonical'> tag based on the provided topic.",
-        'title-analyzer'  => "Analyze the SEO effectiveness of this title: {INPUT}. provide a score out of 100, and give 3 actionable suggestions to improve focus keywords, length, and click-through rate.",
+        'meta-generator' => "You are an Elite SEO strategist. Analyze the topic: {INPUT}.
+            Generate a single, perfect SEO Meta Title and Meta Description.
+            Format the response exactly like this:
+            
+            ### 🏷️ Optimized Meta Title
+            [Your Title Here]
+            
+            ### 📝 Optimized Meta Description
+            [Your Description Here]
+            
+            ### 🎯 SEO Strategy & Reasoning
+            [Brief explanation of why this works]
+            
+            Return ONLY standard Markdown text. Do NOT use JSON.",
+            
+        'blog-outline'   => "You are a Content Architecture Specialist. Create a comprehensive, semantic SEO blog outline for: {INPUT}. 
+            Include:
+            - A click-worthy H1 title.
+            - Logical H2, H3, and H4 sections.
+            - For each section, provide 2-3 bullet points of what to cover.
+            - LSI keywords to weave into the content.
+            - Search intent analysis (Informational/Commercial).
+            Format with clear Markdown headers and bullet points.",
 
-        // Content Tools
-        'blog-topic'      => "Generate 10 trending and high-volume blog topic ideas for the keyword: {INPUT}. For each topic, explain why it's likely to perform well based on search intent.",
-        'paragraph-expander' => "Expand this short text into a rich, detailed, and SEO-friendly paragraph: {INPUT}. Context/Keywords to include: {INPUT2}. Maintain a professional and informative tone.",
-        'content-summarizer' => "Summarize the following content into 5 key bullet points: {INPUT}. Ensure the summary captures the main value propositions and takeaways.",
-        'headline-analyzer' => "Analyze this headline: {INPUT}. Provide specific scores for Emotional Marketing Value (EMV), length, and keyword presence. Suggest 3 better alternatives.",
-        'intro-generator' => "Write a compelling blog post introduction for: {INPUT}. Use a hook (question, stat, or story) to engage readers and naturally include the focus keyword.",
-        'conclusion-writer' => "Write a strong conclusion for a blog post about: {INPUT}. Summarize the key points and include a clear call to action (CTA).",
-        'article-rewriter' => "Rewrite this article content to be fresh and unique while preserving the original meaning and SEO value: {INPUT}.",
+        'keyword-cluster' => "You are a Semantic Search Expert. For the keyword '{INPUT}', generate a 5-pillar Keyword Cluster strategy.
+            For each pillar, provide:
+            - Pillar Name & Primary Keyword.
+            - 5-7 supporting Long-tail keywords.
+            - User Search Intent (Detailed).
+            - Content Type recommendation (e.g., Guide, Review, Comparison).
+            Return ONLY valid JSON array: [{\"cluster\": \"...\", \"primary\": \"...\", \"keywords\": [\"...\"], \"intent\": \"...\", \"strategy\": \"...\"}]",
+
+        'faq-generator'   => "Generate a valid Schema.org FAQPage JSON-LD block for the topic: {INPUT}. 
+            Requirements:
+            1. Questions must reflect actual user search queries.
+            2. Answers must be concise and SEO-friendly.
+            3. Return ONLY the JSON-LD code block wrapped in triple backticks.
+            4. Do NOT include any introductory or concluding text.",
+
+        'product-desc'    => "You are a Conversion-Focused Copywriter. Write a premium, benefit-driven product description for: {INPUT}.
+            Context: {INPUT2}.
+            Structure:
+            1. Hook: 1 punchy sentence.
+            2. Features vs Benefits Table: 4-5 items.
+            3. Body: 200 words of persuasive storytelling.
+            4. SEO Keywords used: List 5 keywords.
+            Maintain a luxury/premium tone.",
+
+        'og-tag-generator' => "Generate professional Open Graph (OG) and Twitter Card tags for: {INPUT}. 
+            Format:
+            1. Provide the Meta Tags in a standard Markdown code block.
+            2. Follow with a brief explanation of why these tags matter for SEO.",
+
+        'robots-generator' => "Generate a sophisticated robots.txt file for a modern WordPress site specialized in: {INPUT}. 
+            Format:
+            1. Provide the robots.txt content in a standard Markdown code block.
+            2. Follow with a brief explanation of the rules included.",
+
+        'sitemap-helper'   => "Analyze the sitemap requirements for a '{INPUT}' website.
+            Provide:
+            - A conceptual XML structure.
+            - Priority and Changefreq value recommendations for different page types.
+            - 5 tips for sitemap optimization that competitors often miss.",
+
+        'canonical-advisor' => "Act as a Technical SEO Consultant. Explain the canonical strategy for {INPUT}.
+            Detail:
+            - When to use self-referencing tags.
+            - How to handle pagination and tracking parameters.
+            - Provide 3 specific <link rel='canonical'> examples for different scenarios.",
+
+        'title-analyzer'  => "Analyze this title for viral and SEO potential: '{INPUT}'.
+            Provide:
+            - SEO Score (1-100).
+            - Emotional Impact Score (1-100).
+            - 5 Actionable 'Pro Fixes' to make it rank higher and get more clicks.
+            - 3 'Power Move' alternatives.",
+
+        // Technical & Advanced
+        'schema-generator' => "Generate an advanced {INPUT2} Schema JSON-LD for {INPUT}. 
+            Ensure it includes all required and recommended fields by schema.org. 
+            Provide the code in a copy-pasteable <script> tag followed by a simple breakdown of the fields included.",
+
+        'twitter-card'    => "Generate optimized Twitter/X Card meta tags for: {INPUT}. 
+            Include Large Image card specifications and a summary of how this will appear in the feed.",
+
+        'alt-text-generator' => "You are an Accessibility and SEO Specialist. Generate 5 variations of descriptive Alt Text for an image described as: {INPUT}. 
+            Include: 1. Descriptive (General), 2. SEO-Focused, 3. Narrative, 4. Decorative, 5. Short/Punchy.",
+
+        'vitals-advisor'  => "Act as a Web Performance Engineer. Provide a detailed step-by-step audit guide to improve LCP, INP, and CLS for a page about {INPUT}. 
+            Include specific tools to use and code-level optimization tips (e.g., fetchpriority, font-display).",
+
+        // Content & Strategy
+        'blog-topic'      => "Generate 15 advanced blog topic ideas for: {INPUT}. 
+            Categorize them by:
+            - The 'What is' (Top of Funnel).
+            - The 'How to' (Middle of Funnel).
+            - The 'Comparison/Vs' (Bottom of Funnel).
+            Briefly explain why each will attract traffic.",
+        
+        'paragraph-expander' => "Expand this concept: {INPUT}. 
+            Constraints: {INPUT2}.
+            Deliver: 3 rich paragraphs with a smooth transition. Use high-level vocabulary and ensure a 'Thought Leadership' tone. Include data-driven sounding arguments where logical.",
+
+        'social-caption'  => "Generate a 3-part social media content series for: {INPUT}.
+            1. The 'Story/Hook' Post.
+            2. The 'Value/Education' Post.
+            3. The 'Direct Offer' Post.
+            Include specific emojis, spacing for readability, and 30 targeted hashtags.",
+
+        'twitter-thread'  => "Create a 10-tweet viral Twitter/X thread based on: {INPUT}. 
+            Tweet 1 must be a viral hook. Tweet 10 must be a Call to Action. Ensure each tweet flows into the next with 'scrolling' psychology.",
+        // Missed Content Tools
+        'content-summarizer' => "Summarize the primary takeaways from this content: {INPUT}.
+            Extract exactly 5 key bullet points. Do not include introductory text.",
+
+        'headline-analyzer' => "Analyze this headline: {INPUT}.
+            Give a score out of 100 for clickability and SEO value.
+            Provide 3 alternative optimized headlines.",
+
+        'intro-generator' => "Write an engaging, SEO-optimized blog introduction for the topic: {INPUT}.
+            Use the PAS (Problem-Agitation-Solution) copywriting framework.
+            Include a hook to keep the reader interested.",
+
+        'conclusion-writer' => "Write a powerful conclusion for a blog post about: {INPUT}.
+            Include a wrap-up of the main points and a strong Call to Action (CTA).",
+
+        'article-rewriter' => "Rewrite the following content to be 100% unique while preserving the original meaning: {INPUT}.
+            Ensure a professional, engaging tone.",
 
         // Keyword Tools
-        'lsi-generator'   => "Generate 20 LSI (Latent Semantic Indexing) keywords related to: {INPUT}. These should be semantically related terms that help Google understand page context.",
-        'long-tail-finder' => "Find 15 low-competition long-tail keyword variations for the main keyword: {INPUT}. Include estimated search intent for each.",
-        'intent-analyzer' => "Analyze the search intent for these keywords: {INPUT}. Categorize each as Informational, Navigational, Transactional, or Commercial Investigation.",
-        'difficulty-estimator' => "Estimate the SEO keyword difficulty (0-100) for: {INPUT}. Explain the factors considered (backlinks needed, content quality, domain authority of competitors).",
-        'competitor-spy'  => "List 10 potential keywords that competitors in the '{INPUT}' niche are likely ranking for. Provide strategies to outrank them.",
+        'lsi-generator' => "Generate 20 LSI (Latent Semantic Indexing) keywords for the main topic: {INPUT}.
+            Format as a bulleted list.",
+
+        'long-tail-finder' => "Give me 15 high-converting long-tail keyword variations for: {INPUT}.
+            Include the estimated search intent (Informational, Navigational, Transactional) for each.",
+
+        'intent-analyzer' => "Analyze the search intent for the keyword: {INPUT}.
+            Is the user looking to buy, learn, or find a specific website?
+            Provide content recommendations to satisfy this intent.",
+
+        'difficulty-estimator' => "Estimate the SEO difficulty for ranking for the keyword: {INPUT}.
+            Provide a rating (Low, Medium, High) and explain what kind of backlinks/content length would be required to compete.",
+
+        'competitor-spy' => "Act as a competitor research analyst. What are the top 5 semantic keyword themes a competitor ranking for '{INPUT}' is likely targeting?
+            Provide a brief strategic overview.",
 
         // Technical Tools
-        'schema-generator' => "Generate JSON-LD schema markup for a {INPUT2} about {INPUT}. Return only the valid JSON-LD <script> tag.",
-        'twitter-card'    => "Generate Twitter Card meta tags for: {INPUT}. Include twitter:card, twitter:title, and twitter:description. Return raw HTML meta tags.",
-        'alt-text-generator' => "Generate SEO-friendly and accessible Alt Text for an image described as: {INPUT}. Include relevant keywords naturally.",
-        'vitals-advisor'  => "Provide actionable tips to improve Core Web Vitals (LCP, CLS, INP) for a page about {INPUT}. Focus on technical optimizations.",
-        'hreflang-builder' => "Generate hreflang tags for a website about {INPUT} with versions in English (US), Spanish (ES), and French (FR). Return raw HTML link tags.",
-        'json-ld-generator' => "Create a custom JSON-LD structured data snippet for {INPUT}. Focus on accuracy and schema.org compliance.",
+        'hreflang-builder' => "Generate standard hreflang HTML link tags for a webpage about {INPUT}.
+            Include variations for English (US, UK), Spanish, and French. Format as a valid HTML code block.",
 
-        // Social & Copy
-        'social-caption'  => "Write 5 engaging social media captions (Instagram, Facebook, LinkedIn) for: {INPUT}. Include relevant emojis and 5 hashtags for each.",
-        'hashtag-generator' => "Generate 30 relevant hashtags for: {INPUT}, categorized by popularity (High, Medium, Low volume).",
-        'linkedin-writer'  => "Write a professional LinkedIn post about: {INPUT}. Include a strong opening hook, value-driven body content, and an engagement question.",
-        'twitter-thread'  => "Generate a 5-tweet Twitter thread based on the topic/content: {INPUT}. Each tweet should be under 280 characters and flow logically.",
-        'ad-copy'         => "Write 3 high-converting Google Ads headlines and 2 descriptions for: {INPUT}. Focus on benefits and strong CTAs.",
-        'email-subject'   => "Generate 10 irresistible email subject lines for: {INPUT}. Include at least 3 curiosity-based, 3 urgency-based, and 4 benefit-based options.",
-        'cta-generator'    => "Generate 5 powerful Call-to-Action (CTA) phrases for a landing page about {INPUT}. Vary the intent (e.g., 'Get Started', 'Download Now', 'Learn More').",
+        'json-ld-generator' => "Generate a basic JSON-LD Article Schema for {INPUT}.
+            Use placeholder values for Author and Publisher if not provided. Enclose in a <script> tag.",
+
+        // Social Tools
+        'hashtag-generator' => "Generate 30 highly relevant, trending hashtags for a social media post about: {INPUT}.
+            Group them into: Broad, Niche, and Community hashtags.",
+
+        'linkedin-writer' => "Write a professional, engagement-driven LinkedIn post about: {INPUT}.
+            Use formatting, emojis, and end with an engaging question to drive comments.",
+
+        'ad-copy' => "Write persuasive Google Ads copy for: {INPUT}.
+            Include 3 Variations of Headlines (max 30 characters each) and 3 Variations of Descriptions (max 90 characters each).",
+            
+        'email-subject' => "Generate 10 highly clickable email subject lines for a campaign about: {INPUT}.
+            Include a mix of curiosity, urgency, and direct benefit angles.",
+
+        'cta-generator' => "Generate 10 powerful Call-to-Action (CTA) phrases for a landing page about: {INPUT}.
+            Focus on conversion rate optimization (CRO) principles.",
     ];
 
     if ( ! isset( $prompts[ $tool ] ) ) {
@@ -182,6 +303,7 @@ function techorbit_call_openai( $prompt, $model ) {
         'https://api.openai.com/v1/chat/completions',
         [
             'timeout' => 60,
+            'sslverify' => false,
             'headers' => [
                 'Authorization' => 'Bearer ' . $api_key,
                 'Content-Type'  => 'application/json',
@@ -226,9 +348,9 @@ function techorbit_parse_openai_response( $response ) {
    GOOGLE GEMINI API CALL
    ============================================================ */
 function techorbit_call_gemini( $prompt, $model ) {
-    $api_key = get_option( 'techorbit_gemini_api_key', '' );
+    $api_key = get_option( 'techorbit_gemini_api_key', 'AIzaSyCR_TJyuF4dFdzEAVzqoWLgp8Sw0cunyH0' );
     if ( empty( $api_key ) ) {
-        return new WP_Error( 'no_key', __( 'Google Gemini API key is not configured. Please set it in Settings → TechOrbit AI Settings.', 'techorbit-seo' ) );
+        $api_key = 'AIzaSyCR_TJyuF4dFdzEAVzqoWLgp8Sw0cunyH0';
     }
 
     $endpoint = 'https://generativelanguage.googleapis.com/v1beta/models/' . $model . ':generateContent?key=' . $api_key;
@@ -237,6 +359,7 @@ function techorbit_call_gemini( $prompt, $model ) {
         $endpoint,
         [
             'timeout' => 60,
+            'sslverify' => false,
             'headers' => [
                 'Content-Type' => 'application/json',
             ],
@@ -294,6 +417,7 @@ function techorbit_call_openrouter( $prompt, $model ) {
         'https://openrouter.ai/api/v1/chat/completions',
         [
             'timeout' => 60,
+            'sslverify' => false,
             'headers' => [
                 'Authorization' => 'Bearer ' . $api_key,
                 'Content-Type'  => 'application/json',
@@ -331,6 +455,60 @@ function techorbit_parse_openrouter_response( $response ) {
     $content = $data['choices'][0]['message']['content'] ?? '';
     if ( empty( $content ) ) {
         return new WP_Error( 'empty_response', __( 'AI returned an empty response.', 'techorbit-seo' ) );
+    }
+
+    return $content;
+}
+
+/* ============================================================
+   GROQ API CALL (OpenAI Compatible)
+   ============================================================ */
+function techorbit_call_groq( $prompt, $model ) {
+    $api_key = get_option( 'techorbit_groq_api_key', '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' );
+    if ( empty( $api_key ) ) {
+        $api_key = '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';
+    }
+
+    $response = wp_remote_post(
+        'https://api.groq.com/openai/v1/chat/completions',
+        [
+            'timeout' => 60,
+            'sslverify' => false,
+            'headers' => [
+                'Authorization' => 'Bearer ' . $api_key,
+                'Content-Type'  => 'application/json',
+            ],
+            'body' => wp_json_encode( [
+                'model'       => $model,
+                'messages'    => [
+                    [ 'role' => 'user', 'content' => $prompt ],
+                ],
+                'temperature' => 0.7,
+                'max_tokens'  => 2000,
+            ] ),
+        ]
+    );
+
+    return techorbit_parse_groq_response( $response );
+}
+
+function techorbit_parse_groq_response( $response ) {
+    if ( is_wp_error( $response ) ) {
+        return new WP_Error( 'request_failed', $response->get_error_message() );
+    }
+
+    $code = wp_remote_retrieve_response_code( $response );
+    $body = wp_remote_retrieve_body( $response );
+    $data = json_decode( $body, true );
+
+    if ( $code !== 200 ) {
+        $msg = isset( $data['error']['message'] ) ? $data['error']['message'] : 'Groq API error (HTTP ' . $code . ')';
+        return new WP_Error( 'api_error', $msg );
+    }
+
+    $content = $data['choices'][0]['message']['content'] ?? '';
+    if ( empty( $content ) ) {
+        return new WP_Error( 'empty_response', __( 'AI returned an empty response. Please try again.', 'techorbit-seo' ) );
     }
 
     return $content;

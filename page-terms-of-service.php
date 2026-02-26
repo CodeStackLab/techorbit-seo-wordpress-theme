@@ -10,16 +10,16 @@ $site_url  = home_url( '/' );
 $date      = 'February 23, 2025';
 ?>
 
-<div style="background:var(--gradient);padding:48px 24px;text-align:center;">
+<div class="page-header-vibrant">
     <div class="container">
-        <h1 style="font-size:clamp(24px,4vw,42px);color:#fff;margin-bottom:12px;">Terms of Service</h1>
-        <p style="color:rgba(255,255,255,0.7);">Last Updated: <?php echo esc_html( $date ); ?></p>
+        <h1 class="page-title-hero">Terms of Service</h1>
+        <p class="page-subtitle">Last Updated: <?php echo esc_html( $date ); ?></p>
     </div>
 </div>
 
-<div style="max-width:860px;margin:56px auto;padding:0 24px 80px;">
-    <div class="single-post-article">
-        <div class="single-post-body single-post-content">
+<div class="page-standard-wrap container">
+    <div class="static-page-article">
+        <div class="static-page-body single-post-content">
 
             <p>Please read these Terms of Service ("Terms") carefully before using <strong><?php echo esc_html( $site_name ); ?></strong> at <a href="<?php echo esc_url( $site_url ); ?>"><?php echo esc_url( $site_url ); ?></a> (the "Service") operated by Akeel Khan ("us", "we", or "our").</p>
 

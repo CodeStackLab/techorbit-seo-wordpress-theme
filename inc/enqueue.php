@@ -93,6 +93,11 @@ function techorbit_admin_enqueue_scripts( $hook ) {
     // Only load on our plugin settings page
     if ( strpos( $hook, 'techorbit' ) === false ) return;
 
+    $theme_dir = get_stylesheet_directory();
+    $theme_uri = get_stylesheet_directory_uri();
+    $admin_css_ver = @filemtime( $theme_dir . '/assets/css/admin.css' ) ?: '2.0';
+    $admin_js_ver  = @filemtime( $theme_dir . '/assets/js/admin.js' )  ?: '2.0';
+
     wp_enqueue_style( 'techorbit-admin', $theme_uri . '/assets/css/admin.css', [], $admin_css_ver );
     wp_enqueue_script( 'techorbit-admin', $theme_uri . '/assets/js/admin.js', [ 'jquery' ], $admin_js_ver, true );
 

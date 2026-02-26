@@ -15,6 +15,7 @@ function techorbit_register_settings() {
         // AI
         'techorbit_openai_api_key',
         'techorbit_gemini_api_key',
+        'techorbit_groq_api_key',
         'techorbit_default_ai_model',
         'techorbit_openrouter_api_key',
         'techorbit_openrouter_model',
@@ -67,7 +68,8 @@ function techorbit_get_settings() {
     return [
         'openai_api_key'        => get_option( 'techorbit_openai_api_key', '' ),
         'gemini_api_key'        => get_option( 'techorbit_gemini_api_key', '' ),
-        'default_ai_model'      => get_option( 'techorbit_default_ai_model', 'gemini-flash-latest' ),
+        'groq_api_key'          => get_option( 'techorbit_groq_api_key', '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' ),
+        'default_ai_model'      => get_option( 'techorbit_default_ai_model', 'llama-3.3-70b-versatile' ),
         'openrouter_api_key'    => get_option( 'techorbit_openrouter_api_key', '' ),
         'openrouter_model'      => get_option( 'techorbit_openrouter_model', 'google/gemma-2-9b-it:free' ),
         'enable_failover'       => get_option( 'techorbit_enable_failover', '1' ),
@@ -97,6 +99,8 @@ function techorbit_ai_models() {
         'gpt-4o'              => 'GPT-4o (OpenAI — Most Capable)',
         'gemini-1.5-flash'    => 'Gemini 1.5 Flash (Google — Fast)',
         'gemini-1.5-pro'      => 'Gemini 1.5 Pro (Google — Best Quality)',
+        'llama-3.3-70b-versatile' => 'Llama 3.3 70B (Groq — Blazing Fast)',
+        'llama-3.1-8b-instant' => 'Llama 3.1 8B (Groq — Instant)',
         'openrouter-auto'     => 'OpenRouter (Auto Select — Primary)',
     ];
 }
