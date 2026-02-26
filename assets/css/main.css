@@ -4282,7 +4282,7 @@ textarea.tool-input {
     padding: 30px;
     border-radius: 20px;
     border: 1px solid var(--border);
-    line-height: 1.8;
+    line-height: 1.5;
     color: var(--text-body);
     font-size: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
@@ -4594,28 +4594,33 @@ code {
     font-family: \JetBrains Mono\, monospace;
     color: var(--primary);
 }
+
 /* --- Elite White Theme Overrides --- */
 .code-block-container {
     background: #ffffff !important;
     border: 1px solid #e5e7eb !important;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
 }
+
 .code-block-header {
     background: #f9fafb !important;
     border-bottom: 1px solid #e5e7eb !important;
 }
+
 .code-block-header span {
     color: #4b5563 !important;
 }
+
 .code-block-header .btn-copy-mini {
     background: #f3f4f6 !important;
     color: #111827 !important;
     border: 1px solid #e5e7eb !important;
 }
+
 .code-block-container code {
     color: #111827 !important;
 }
+
 code {
     font-family: var(--font-mono) !important;
 }
-

@@ -105,19 +105,21 @@
             .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
             .replace(/\*(.*)\*/gim, '<em>$1</em>')
             .replace(/`(.*?)`/gim, '<code>$1</code>');
-
-        // 3. Line Breaks (Skip if already handled by headers/lists or code blocks)
-        html = html.split('\n').map(line => {
-            if (line.match(/^(<h|<li|CODE_BLOCK_)/)) return line;
-            return line + '<br>';
-        }).join('\n');
-
-        // 4. Handle Lists
+        // 3. Handle Lists FIRST so they aren't wrapped in paragraphs
         html = html.replace(/^\s*[\-\*•]\s+(.*)$/gim, '<li>$1</li>');
         if (html.includes('<li>')) {
             html = html.replace(/(<li>.*<\/li>)/gim, '<ul>$1</ul>');
+            html = html.replace(/<\/ul>\n<ul>/gim, '\n');
             html = html.replace(/<\/ul><ul>/gim, '');
         }
+
+        // 4. Paragraphs and Line Breaks
+        html = html.split('\n').map(line => {
+            const t = line.trim();
+            if (!t) return ''; // Skip empty lines entirely to avoid extra spacing
+            if (t.match(/^(<h|<li|<ul|<ol|CODE_BLOCK_|<blockquote)/)) return t;
+            return '<p>' + t + '</p>';
+        }).filter(line => line !== '').join('\n');
 
         // 5. Restore Code Blocks
         codeBlocks.forEach((block, i) => {

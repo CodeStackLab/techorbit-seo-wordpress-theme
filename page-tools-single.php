@@ -44,6 +44,15 @@ $tool_id = $slug === 'product-description' ? 'product-desc' : $slug;
         <div class="tool-layout">
             <!-- Main Content Area -->
             <div class="tool-main-content">
+            
+                <!-- ========================================== -->
+                <!-- 🛑 PASTE YOUR TOP GOOGLE ADSENSE HTML/JS CODE BELOW -->
+                <!-- ========================================== -->
+                <div class="top-ad-slot" style="margin-bottom:24px; text-align:center; width:100%;">
+                    
+                </div>
+                <!-- ========================================== -->
+
                 <div class="tool-main-card">
                     <form id="ai-tool-form" data-tool="<?php echo esc_attr($tool_id); ?>">
                         <div class="form-group">
@@ -153,11 +162,26 @@ $tool_id = $slug === 'product-description' ? 'product-desc' : $slug;
                     </div>
                 </div>
                 
-                <div class="sidebar-widget ads-widget" style="margin-top:32px;">
-                    <?php techorbit_adsense('sidebar'); ?>
+                <div class="sidebar-widget ads-widget" style="margin-top:32px; text-align:center;">
+                    <!-- ========================================== -->
+                    <!-- 🛑 PASTE YOUR SIDEBAR (SQUARE/VERTICAL) GOOGLE ADSENSE HTML/JS CODE BELOW -->
+                    <!-- ========================================== -->
+                    
+                    
+                    
+                    <!-- ========================================== -->
                 </div>
             </div>
         </div>
+
+        <!-- ========================================== -->
+        <!-- 🛑 PASTE YOUR BOTTOM (HORIZONTAL) GOOGLE ADSENSE HTML/JS CODE BELOW -->
+        <!-- ========================================== -->
+        <div class="bottom-ad-slot" style="margin-top:40px; text-align:center; width:100%;">
+            
+            
+        </div>
+        <!-- ========================================== -->
     </div>
 </div>
 

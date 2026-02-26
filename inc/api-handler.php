@@ -125,14 +125,15 @@ function techorbit_build_prompt( $tool, $input, $input2 = '' ) {
             
             Return ONLY standard Markdown text. Do NOT use JSON.",
             
-        'blog-outline'   => "You are a Content Architecture Specialist. Create a comprehensive, semantic SEO blog outline for: {INPUT}. 
+        'blog-outline'   => "You are a Content Architecture Specialist. Create a strict, semantic SEO blog OUTLINE for: {INPUT}. 
+            CRITICAL INSTRUCTION: DO NOT write paragraphs of blog content. ONLY output the structured outline (headings and short bullet points). If you write a full article, you have failed.
             Include:
             - A click-worthy H1 title.
             - Logical H2, H3, and H4 sections.
-            - For each section, provide 2-3 bullet points of what to cover.
+            - For each section, provide 2-3 short bullet points of what to cover.
             - LSI keywords to weave into the content.
             - Search intent analysis (Informational/Commercial).
-            Format with clear Markdown headers and bullet points.",
+            Format with clear Markdown headers and bullet points only.",
 
         'keyword-cluster' => "You are a Semantic Search Expert. For the keyword '{INPUT}', generate a 5-pillar Keyword Cluster strategy.
             For each pillar, provide:
@@ -203,6 +204,7 @@ function techorbit_build_prompt( $tool, $input, $input2 = '' ) {
 
         // Content & Strategy
         'blog-topic'      => "Generate 15 advanced blog topic ideas for: {INPUT}. 
+            CRITICAL INSTRUCTION: DO NOT write actual blog posts. ONLY provide the 15 titles and brief explanations.
             Categorize them by:
             - The 'What is' (Top of Funnel).
             - The 'How to' (Middle of Funnel).
@@ -211,6 +213,7 @@ function techorbit_build_prompt( $tool, $input, $input2 = '' ) {
         
         'paragraph-expander' => "Expand this concept: {INPUT}. 
             Constraints: {INPUT2}.
+            CRITICAL INSTRUCTION: ONLY write the 3 requested paragraphs. Do not write a full blog post. Do not include titles.
             Deliver: 3 rich paragraphs with a smooth transition. Use high-level vocabulary and ensure a 'Thought Leadership' tone. Include data-driven sounding arguments where logical.",
 
         'social-caption'  => "Generate a 3-part social media content series for: {INPUT}.
@@ -229,7 +232,8 @@ function techorbit_build_prompt( $tool, $input, $input2 = '' ) {
             Give a score out of 100 for clickability and SEO value.
             Provide 3 alternative optimized headlines.",
 
-        'intro-generator' => "Write an engaging, SEO-optimized blog introduction for the topic: {INPUT}.
+        'intro-generator' => "Write ONLY an engaging, SEO-optimized blog INTRODUCTION (1-2 paragraphs max) for the topic: {INPUT}.
+            CRITICAL INSTRUCTION: DO NOT write the rest of the blog post. Only the introduction.
             Use the PAS (Problem-Agitation-Solution) copywriting framework.
             Include a hook to keep the reader interested.",
 
@@ -237,6 +241,7 @@ function techorbit_build_prompt( $tool, $input, $input2 = '' ) {
             Include a wrap-up of the main points and a strong Call to Action (CTA).",
 
         'article-rewriter' => "Rewrite the following content to be 100% unique while preserving the original meaning: {INPUT}.
+            CRITICAL INSTRUCTION: ONLY rewrite the provided text. Do not add new sections or expand it into a longer blog post.
             Ensure a professional, engaging tone.",
 
         // Keyword Tools
