@@ -37,5 +37,6 @@ Private - All Rights Reserved xudevstudio.
 **Support & Donations:**
 * **PayPal:** [https://paypal.me/khan1899?locale.x=en_GB&country.x=IN](https://paypal.me/khan1899?locale.x=en_GB&country.x=IN)
 * **Binance ID:** `538454480`
+* **Litecoin (LTC) Address:** `LaJGvzQJGmqfCFkP9cY1kjLp6hphECxWS2` (Network: LTC / Litecoin)
 * **Name for Verification:** Mohd Akeel
 * **Username:** Mohdakeel1899
